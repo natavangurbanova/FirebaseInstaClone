@@ -17,7 +17,6 @@
 		CE40AEF52C99CED70092F1FA /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEF42C99CED70092F1FA /* FeedViewController.swift */; };
 		CE40AEF72C99D0740092F1FA /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEF62C99D0740092F1FA /* ProfileViewController.swift */; };
 		CE40AEF92C99D7C30092F1FA /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEF82C99D7C30092F1FA /* TabBarViewController.swift */; };
-		CEA6E6CB2CB461BE006464A2 /* SignUpPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA6E6CA2CB461BE006464A2 /* SignUpPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +34,6 @@
 		CE40AEF42C99CED70092F1FA /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		CE40AEF62C99D0740092F1FA /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		CE40AEF82C99D7C30092F1FA /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
-		CEA6E6CA2CB461BE006464A2 /* SignUpPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +88,6 @@
 			children = (
 				CE40AEDE2C96DCD50092F1FA /* AppDelegate.swift */,
 				CE40AEE02C96DCD50092F1FA /* SceneDelegate.swift */,
-				CEA6E6CA2CB461BE006464A2 /* SignUpPage.swift */,
 				CE40AEE22C96DCD50092F1FA /* ViewController.swift */,
 				CE40AEF82C99D7C30092F1FA /* TabBarViewController.swift */,
 				CE40AEF42C99CED70092F1FA /* FeedViewController.swift */,
@@ -226,7 +223,6 @@
 				CE40AEF52C99CED70092F1FA /* FeedViewController.swift in Sources */,
 				CE40AEF92C99D7C30092F1FA /* TabBarViewController.swift in Sources */,
 				CE40AEE12C96DCD50092F1FA /* SceneDelegate.swift in Sources */,
-				CEA6E6CB2CB461BE006464A2 /* SignUpPage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

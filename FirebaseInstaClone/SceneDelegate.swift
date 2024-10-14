@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import FirebaseAuth
+import Firebase
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,10 +21,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.rootViewController = mainTabBarController
         } else {
             
-            let signUpVC = SignUpPage()
-            let navController = UINavigationController(rootViewController: signUpVC)
+            let VC = ViewController()
+            let navController = UINavigationController(rootViewController: VC)
             window?.rootViewController = navController
-        }			
+        }
         window?.makeKeyAndVisible()
     }
 
