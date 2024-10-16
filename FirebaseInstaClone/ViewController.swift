@@ -36,7 +36,7 @@ class ViewController: UIViewController {
         return textField
     }()
     
-    let SignInButton: UIButton = {
+    let signInButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign In", for: .normal)
         button.backgroundColor = UIColor.systemBlue
@@ -46,21 +46,34 @@ class ViewController: UIViewController {
         return button
     }()
     
+    let signUpButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Don't have an account? Sign Up", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 8
+        return button
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setupLayout()
-        SignInButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
-        view.addSubview(SignInButton)
+        setUpConstraints()
+        setUpViews()
     }
     
-    func setupLayout() {
+    func setUpViews() {
         view.addSubview(titleLabel)
         view.addSubview(emailTextField)
         view.addSubview(passwordTextField)
-        view.addSubview(SignInButton)
-        
+        view.addSubview(signInButton)
+        view.addSubview(signUpButton)
+        signInButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
+        signUpButton.addTarget(self, action: #selector(signUpTapped), for: .touchUpInside)
+    }
+        func setUpConstraints() {
+
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(80)
             make.centerX.equalToSuperview()
@@ -80,10 +93,16 @@ class ViewController: UIViewController {
             make.height.equalTo(50)
         }
         
-        SignInButton.snp.makeConstraints { make in
+        signInButton.snp.makeConstraints { make in
             make.top.equalTo(passwordTextField.snp.bottom).offset(40)
             make.left.equalToSuperview().offset(50)
             make.right.equalToSuperview().offset(-50)
+            make.height.equalTo(50)
+        }
+            
+        signUpButton.snp.makeConstraints { make in
+            make.top.equalTo(signInButton.snp.bottom).offset(20)
+            make.centerX.equalToSuperview().inset(50)
             make.height.equalTo(50)
         }
     }
@@ -109,6 +128,11 @@ class ViewController: UIViewController {
             
         }
         
+    }
+    
+    @objc func signUpTapped() {
+      let signUpViewController = SignUpViewController()
+        navigationController?.pushViewController(signUpViewController, animated: true)
     }
     
     func transitionToTabBarController(_ tabBarController: UITabBarController) {
