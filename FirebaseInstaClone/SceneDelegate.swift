@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        if let currentUser = Auth.auth().currentUser {
+        if Auth.auth().currentUser != nil {
             let mainTabBarController = TabBarViewController()
             window?.rootViewController = mainTabBarController
         } else {

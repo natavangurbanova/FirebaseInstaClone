@@ -39,7 +39,7 @@ class ViewController: UIViewController {
     let signInButton: UIButton = {
         let button = UIButton()
         button.setTitle("Sign In", for: .normal)
-        button.backgroundColor = UIColor.systemBlue
+        button.backgroundColor = UIColor.systemIndigo
         button.tintColor = .white
         button.layer.cornerRadius = 8
         //button.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
@@ -59,8 +59,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        setUpConstraints()
         setUpViews()
+        setUpConstraints()
+        
     }
     
     func setUpViews() {
@@ -102,7 +103,8 @@ class ViewController: UIViewController {
             
         signUpButton.snp.makeConstraints { make in
             make.top.equalTo(signInButton.snp.bottom).offset(20)
-            make.centerX.equalToSuperview().inset(50)
+            make.left.equalToSuperview().offset(50)
+            make.right.equalToSuperview().offset(-50)
             make.height.equalTo(50)
         }
     }
