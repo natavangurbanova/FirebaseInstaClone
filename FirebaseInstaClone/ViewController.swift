@@ -122,7 +122,7 @@ class ViewController: UIViewController {
             if let error = error {
                 print("Sign in failed : \(error.localizedDescription)")
             } else {
-                print("Sign iin successful!")
+                print("Sign in successful!")
                 
             let tabBarController = TabBarViewController()
                 strongSelf.transitionToTabBarController(tabBarController)
