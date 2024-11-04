@@ -17,9 +17,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
+        
         if Auth.auth().currentUser != nil {
             let mainTabBarController = TabBarViewController()
-            window?.rootViewController = mainTabBarController
+            window?.rootViewController = UINavigationController(rootViewController: mainTabBarController)
         } else {
             let VC = ViewController()
             let navController = UINavigationController(rootViewController: VC)

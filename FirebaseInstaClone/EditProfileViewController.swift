@@ -66,7 +66,6 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         setupViews()
         
         self.title = "Edit profile"
-        
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         
@@ -86,10 +85,15 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             make.top.equalTo(view.safeAreaLayoutGuide).offset(40)
             make.width.height.equalTo(100)
         }
+        [profileImageView, placeholderLabel].forEach {
+            $0.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+        }
         usernameLabel.snp.makeConstraints { make in
             make.top.equalTo(imageContainerView.snp.bottom).offset(20)
-            make.right.equalToSuperview().offset(20)
-            make.left.equalToSuperview().offset(20)
+            make.horizontalEdges.equalToSuperview().inset(20)
+            make.centerX.equalToSuperview()
         }
         bioLabel.snp.makeConstraints { make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(20)

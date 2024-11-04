@@ -103,9 +103,7 @@ class ProfileViewController: UIViewController {
     
     @objc func editProfileTapped() {
         let editProfileVC = EditProfileViewController()
-        editProfileVC.modalPresentationStyle = .fullScreen
-        self.present(editProfileVC, animated: true, completion: nil)
-
+        navigationController?.pushViewController(editProfileVC, animated: true)
     }
     
     @objc func logOut() {
