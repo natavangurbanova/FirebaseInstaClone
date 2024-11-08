@@ -19,11 +19,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         if Auth.auth().currentUser != nil {
-            let mainTabBarController = TabBarViewController()
-            window?.rootViewController = UINavigationController(rootViewController: mainTabBarController)
+           // let mainTabBarController = TabBarViewController()
+            window?.rootViewController = TabBarViewController()
         } else {
-            let VC = ViewController()
-            let navController = UINavigationController(rootViewController: VC)
+            let signInVC = ViewController()
+            let navController = UINavigationController(rootViewController: signInVC)
             window?.rootViewController = navController
         }
         window?.makeKeyAndVisible()
