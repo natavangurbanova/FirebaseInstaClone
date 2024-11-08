@@ -93,7 +93,7 @@ class ProfileViewController: UIViewController {
             make.height.equalTo(50)
         }
         logOutButton.snp.makeConstraints { make in
-            //make.bottom.equalToSuperview()
+            make.top.equalTo(editProfileButton.snp.bottom).offset(20)
             make.center.equalToSuperview()
             make.width.equalTo(150)
             make.height.equalTo(50)
@@ -103,6 +103,9 @@ class ProfileViewController: UIViewController {
     
     @objc func editProfileTapped() {
         let editProfileVC = EditProfileViewController()
+        //let navController = UINavigationController(rootViewController: editProfileVC)
+       // navController.modalPresentationStyle = .fullScreen
+        //self.present(navController, animated: true, completion: nil)
         navigationController?.pushViewController(editProfileVC, animated: true)
     }
     
