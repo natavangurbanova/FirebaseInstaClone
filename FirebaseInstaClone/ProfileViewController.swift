@@ -23,7 +23,7 @@ class ProfileViewController: UIViewController {
     }()
     
     let usernameLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 24)
         label.text = "Username"
         return label
@@ -63,6 +63,27 @@ class ProfileViewController: UIViewController {
         view.backgroundColor = .white
         setupViews()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
+    func loadProfileImage() {
+        let db = Firestore.firestore()
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        
+        db.collection("users").document(userID).getDocument { document, error in
+            if let document = document, document.exists {
+                if let profileImageUrl = document.data()?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
+                    self.profileImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "person.circle"))
+                }
+            } else {
+                print("Error fetching profile image URL: \(String(describing: error))")
+            }
+        }
+    }
+
     
     private func setupViews() {
         view.addSubview(profileImageView)
