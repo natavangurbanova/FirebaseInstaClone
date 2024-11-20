@@ -1,16 +1,14 @@
-# Uncomment the next line to define a global platform for your project
- platform :ios, '17.2'
+platform :ios, '17.2'
 
 target 'FirebaseInstaClone' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-  pod 'SnapKit'
-
-  # Pods for FirebaseInstaClone
-  
-  pod 'Firebase/Analytics'
-  pod 'Firebase/Auth'
-  pod 'Firebase/Firestore'
-  pod 'Firebase/Storage'
-  
+    # Comment the next line if you don't want to use dynamic frameworks
+    use_frameworks!
+    pod 'SnapKit'
+    
+    # Pods for FirebaseInstaClone
+    pod 'Firebase/Analytics'
+    pod 'Firebase/Auth'
+    pod 'Firebase/Firestore'
+    pod 'Firebase/Storage'
+    pod 'SDWebImage'
 end
