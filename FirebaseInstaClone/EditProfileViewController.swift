@@ -161,23 +161,27 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         picker.dismiss(animated: true, completion: nil)
     }
     func uploadProfileImage(_ image: UIImage, completion: @escaping (URL?) -> Void) {
-        guard let imageDate = image.jpegData(compressionQuality: 0.75) else { return }
-        
+        guard let imageDate = image.jpegData(compressionQuality: 0.75) else {
+            print("Error: Failed to convert image to JPEG data.")
+            completion(nil)
+            return
+        }
         let storageRef = Storage.storage().reference().child("profile_images/\(Auth.auth().currentUser?.uid ?? "user")_profile.jpg")
-       // let metaData = StorageMetadata()
-        //metaData.contentType = "image/jpeg"
+        
         storageRef.putData(imageDate, metadata: nil) { metadata, error in
             if let error = error {
                 print("Error: Failed to upload image \(error.localizedDescription)")
+                completion(nil)
                 return
             }
             
             storageRef.downloadURL { url, error in
-                if let url = url {
-                    completion(url)
-                } else {
+                if let error = error {
+                    print("Error: Failed to get download URL \(error.localizedDescription)")
                     completion(nil)
+                    return
                 }
+                    completion(url)
             }
         }
     }
@@ -195,3 +199,4 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         }
    
     }
+    
