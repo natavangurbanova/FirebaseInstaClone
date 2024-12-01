@@ -67,6 +67,7 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         setupViews()
         setupGestureRecognizer()
         
+        
         self.title = "Edit profile"
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -122,6 +123,24 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     
     @objc func saveButtonTapped() {
         navigationController?.popViewController(animated: true)
+        func handleSaveButtonTapped(selectedImage: UIImage) {
+            uploadProfileImage(selectedImage) { [weak self] url in
+                guard let self = self else { return }
+                if let url = url {
+                    // Save the download URL to Firestore
+                    self.saveProfileImageUrlToFirestore(url: url)
+                    
+                    // Notify ProfileVC to reload the image
+                    NotificationCenter.default.post(name: .didUpdateProfileImage, object: nil)
+                    
+                    // Navigate back to ProfileVC
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    print("Failed to get download URL")
+                }
+            }
+        }
+
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -174,4 +193,5 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                 }
             }
         }
+   
     }

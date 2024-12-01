@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import FirebaseAuth
 import FirebaseFirestore
+import SDWebImage
 
 class ProfileViewController: UIViewController {
     
@@ -59,31 +60,46 @@ class ProfileViewController: UIViewController {
     //MARK: Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadProfileData), name: .didUpdateProfileImage, object: nil)
+
         view.backgroundColor = .white
         setupViews()
+    }
+    @objc func reloadProfileData() {
+        loadProfileData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        loadProfileData()
     }
     
-    func loadProfileImage() {
-        let db = Firestore.firestore()
+    func loadProfileData() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
         
-        db.collection("users").document(userID).getDocument { document, error in
+        db.collection("users").document(userID).getDocument { [weak self] document, error in
+            guard let self = self else { return }
             if let document = document, document.exists {
-                if let profileImageUrl = document.data()?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
+                let data = document.data()
+                
+                // Fetch username and bio
+                self.usernameLabel.text = data?["username"] as? String ?? "No username"
+                self.bioLabel.text = data?["bio"] as? String ?? "No bio"
+                
+                // Fetch and load profile image
+                if let profileImageUrl = data?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
+                    print("Profile Image URL: \(profileImageUrl)") // Debug log
                     self.profileImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "person.circle"))
+                } else {
+                    print("No profileImageUrl found")
+                    self.profileImageView.image = UIImage(systemName: "person.circle")
                 }
             } else {
-                print("Error fetching profile image URL: \(String(describing: error))")
+                print("Document does not exist: \(String(describing: error))")
             }
         }
     }
-
     
     private func setupViews() {
         view.addSubview(profileImageView)
@@ -124,9 +140,6 @@ class ProfileViewController: UIViewController {
     
     @objc func editProfileTapped() {
         let editProfileVC = EditProfileViewController()
-        //let navController = UINavigationController(rootViewController: editProfileVC)
-       // navController.modalPresentationStyle = .fullScreen
-        //self.present(navController, animated: true, completion: nil)
         navigationController?.pushViewController(editProfileVC, animated: true)
     }
     
@@ -144,3 +157,7 @@ class ProfileViewController: UIViewController {
 
     
 }
+extension Notification.Name {
+    static let didUpdateProfileImage = Notification.Name("didUpdateProfileImage")
+}
+
