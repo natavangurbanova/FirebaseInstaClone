@@ -87,12 +87,33 @@ class SignUpViewController: UIViewController {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
                 print("Sign up failed: \(error.localizedDescription)")
-            } else {
-                print("Sign up succesful!")
-                self.transitionToSignInVC()
+                return
             }
+            
+            self.createUserDocument()
+            print("User successfully signed up!")
+                
+            self.transitionToSignInVC()
+            
         }
         
+    }
+    
+    func createUserDocument() {
+        let db = Firestore.firestore()
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        
+        db .collection("users").document(userID).setData([
+            "profileImageUrl": "",
+            "username": "New User",
+            "bio": "Add your bio"
+        ]) { error in
+            if let error = error  {
+                print("Error creating user document: \(error.localizedDescription)")
+            } else {
+                print("User document created successfully!")
+            }
+        }
     }
     
     func transitionToSignInVC() {
