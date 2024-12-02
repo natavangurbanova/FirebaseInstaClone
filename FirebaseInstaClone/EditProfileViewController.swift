@@ -148,7 +148,10 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
-        guard let selectedImage = info[.originalImage] as? UIImage else { return }
+        guard let selectedImage = info[.originalImage] as? UIImage else {
+        print("No image selected")
+        return
+    }
         profileImageView.image = selectedImage
         placeholderLabel.isHidden = true
     }
@@ -163,7 +166,8 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             completion(nil)
             return
         }
-        let storageRef = Storage.storage().reference().child("profile_images/\(Auth.auth().currentUser?.uid ?? "user")_profile.jpg")
+        let userID = Auth.auth().currentUser?.uid ?? "user"
+        let storageRef = Storage.storage().reference().child("profile_images/\(userID)_profile.jpg")
         
         storageRef.putData(imageDate, metadata: nil) { metadata, error in
             if let error = error {
@@ -176,9 +180,11 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                 if let error = error {
                     print("Error: Failed to get download URL \(error.localizedDescription)")
                     completion(nil)
-                    return
+                } else if let url = url {
+                    print("Image uploaded successfully. URL: \(url.absoluteString)")
+                    completion(url)
+
                 }
-                completion(url)
             }
         }
     }
