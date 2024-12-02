@@ -67,7 +67,6 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         setupViews()
         setupGestureRecognizer()
         
-        
         self.title = "Edit profile"
         self.navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -123,6 +122,12 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     
     @objc func saveButtonTapped() {
         navigationController?.popViewController(animated: true)
+        guard let selectedImage = profileImageView.image else {
+            print("Error: No image selected.")
+            return
+        }
+        handleSaveButtonTapped(selectedImage: selectedImage)
+    }
         func handleSaveButtonTapped(selectedImage: UIImage) {
             uploadProfileImage(selectedImage) { [weak self] url in
                 guard let self = self else { return }
@@ -140,24 +145,16 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                 }
             }
         }
-
-    }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
-        
         guard let selectedImage = info[.originalImage] as? UIImage else { return }
-        
         profileImageView.image = selectedImage
-        uploadProfileImage(selectedImage) { [weak self] url in
-            if let url = url {
-                 self?.saveProfileImageUrlToFirestore(url: url)
-            }
-        }
+        placeholderLabel.isHidden = true
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-       
+        
         picker.dismiss(animated: true, completion: nil)
     }
     func uploadProfileImage(_ image: UIImage, completion: @escaping (URL?) -> Void) {
@@ -181,15 +178,26 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                     completion(nil)
                     return
                 }
-                    completion(url)
+                completion(url)
             }
         }
     }
     func saveProfileImageUrlToFirestore(url: URL) {
-            let db = Firestore.firestore()
-            guard let userID = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        
+        let userRef = db.collection("users").document(userID)
+        userRef.getDocument { document, error in
+            if let error = error {
+                print("Failed to fetch user document \(error.localizedDescription)")
+                return
+            }
             
-            db.collection("users").document(userID).updateData(["profileImageUrl": url.absoluteString]) { error in
+            guard document?.exists == true else {
+                print("Error: User document does not exist.")
+                return
+            }
+            userRef.updateData(["profileImageURL": url.absoluteString]) { error in
                 if let error = error {
                     print("Failed to save profile image URL to Firestore: \(error)")
                 } else {
@@ -197,6 +205,6 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                 }
             }
         }
-   
     }
+}
     
