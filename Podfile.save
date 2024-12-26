@@ -6,7 +6,6 @@ target 'FirebaseInstaClone' do
     pod 'SnapKit'
     
     # Pods for FirebaseInstaClone
-    pod 'Firebase/Analytics'
     pod 'Firebase/Core'
     pod 'Firebase/Auth'
     pod 'Firebase/Firestore'
