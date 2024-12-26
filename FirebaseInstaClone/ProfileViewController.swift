@@ -88,9 +88,9 @@ class ProfileViewController: UIViewController {
                 self.bioLabel.text = data?["bio"] as? String ?? "No bio"
                 
                 // Fetch and load profile image
-                if let profileImageUrl = data?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
+                if let profileImageUrl = data?["profileImageURL"] as? String, let url = URL(string: profileImageUrl) {
                     print("Profile Image URL: \(profileImageUrl)") // Debug log
-                    self.profileImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "person.circle"))
+                    self.setImage(with: url)
                 } else {
                     print("No profileImageUrl found")
                     self.profileImageView.image = UIImage(systemName: "person.circle")
@@ -98,6 +98,12 @@ class ProfileViewController: UIViewController {
             } else {
                 print("Document does not exist: \(String(describing: error))")
             }
+        }
+    }
+    
+    fileprivate func setImage(with URL: URL) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.profileImageView.sd_setImage(with: URL)
         }
     }
     
@@ -157,6 +163,7 @@ class ProfileViewController: UIViewController {
 
     
 }
+
 extension Notification.Name {
     static let didUpdateProfileImage = Notification.Name("didUpdateProfileImage")
 }
