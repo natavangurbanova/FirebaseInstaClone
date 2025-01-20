@@ -23,7 +23,7 @@ class TabBarViewController: UITabBarController {
         
         feedVC.tabBarItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "house.fill"), tag: 0)
         profileVC.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 1)
-        uploadVC.tabBarItem = UITabBarItem(title: "Upload", image: UIImage(systemName: "plus.app"), tag: 1)
+        uploadVC.tabBarItem = UITabBarItem(title: "Upload", image: UIImage(systemName: "plus.app"), tag: 2)
         viewControllers = [feedNavController, profileNavController, uploadNavController]
         
         
