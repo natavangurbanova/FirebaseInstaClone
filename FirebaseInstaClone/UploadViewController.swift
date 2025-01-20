@@ -22,6 +22,8 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         return button
     }()
     
+    var selectedImage: UIImage?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -45,12 +47,60 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         imagePicker.delegate = self
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
-        print("Upload button tapped")
-        
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
+        if let image = info[.originalImage] as? UIImage {
+            self.selectedImage = image
+            uploadImageToFirebase(image: image)
+        }
+    }
+    
+    private func uploadImageToFirebase(image: UIImage) {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        let storageRef = Storage.storage().reference().child("posts/\(userID)/\(UUID().uuidString).jpg")
+        
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            print("Failed to get image data")
+            return
+        }
+        
+        storageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error    {
+                print("Error uploading image: \(error.localizedDescription)")
+                return
+            }
+            storageRef.downloadURL { url, error in
+                if let error = error {
+                    print("Failed to get download URL: \(error.localizedDescription)")
+                    return
+                }
+                if let url = url {
+                    self.savePostToFirestore(imageUrl: url.absoluteString)
+                }
+            }
+        }
+    }
+    private func savePostToFirestore(imageUrl: String) {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        let postData: [String: Any] = [
+            "userID": userID,
+            "imageUrl": imageUrl,
+            "caption": "",
+            "timestamp": Timestamp(date: Date())
+        ]
+        
+        db.collection("posts").document(userID).collection("userPosts").addDocument(data: postData) { error in
+            if let error = error {
+                print("Error saving post: \(error.localizedDescription)")
+            } else {
+                print("Post saved successfully!")
+                self.tabBarController?.selectedIndex = 1
+            }
+            
+        }
     }
     
 }
