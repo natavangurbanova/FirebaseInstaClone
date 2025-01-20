@@ -43,13 +43,13 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         return label
     }()
     
-    let bioLabel: UILabel = {
-        let label = UILabel()
-        label.text = "This is your bio"
-        label.textAlignment = .center
-        label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 20)
-        return label
+    let bioTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "This is your bio"
+        textField.textAlignment = .center
+        textField.textColor = .black
+        textField.font = UIFont.systemFont(ofSize: 20)
+        return textField
     }()
     
     let saveButton: UIButton = {
@@ -69,6 +69,41 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         
         self.title = "Edit profile"
         self.navigationController?.navigationBar.prefersLargeTitles = true
+        
+        fetchProfileData()
+    }
+    
+    private func fetchProfileData() {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        let userRef = Firestore.firestore().collection("users").document(userID)
+        
+        userRef.getDocument { [weak self] document, error in
+            guard let self = self, let data = document?.data(), error == nil else {
+                print("Failed to fetch user data: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            if let bio = data["bio"] as? String {
+                self.bioTextField.text = bio
+            }
+            
+            if let profileImageUrl = data["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
+                self.loadImage(from: url)
+            }
+        }
+    }
+    private func loadImage(from url: URL) {
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let data = data, error == nil else {
+                print("Failed to load image: \(error?.localizedDescription ?? "Unknown error")")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self?.profileImageView.image = UIImage(data: data)
+                self?.placeholderLabel.isHidden = true
+            }
+        }.resume()
     }
     
     private func setupViews() {
@@ -76,7 +111,7 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         imageContainerView.addSubview(profileImageView)
         imageContainerView.addSubview(placeholderLabel)
         view.addSubview(usernameLabel)
-        view.addSubview(bioLabel)
+        view.addSubview(bioTextField)
         view.addSubview(saveButton)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         
@@ -95,12 +130,12 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             make.horizontalEdges.equalToSuperview().inset(20)
             make.centerX.equalToSuperview()
         }
-        bioLabel.snp.makeConstraints { make in
+        bioTextField.snp.makeConstraints { make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(20)
             make.horizontalEdges.equalToSuperview().inset(20)
         }
         saveButton.snp.makeConstraints { make in
-            make.top.equalTo(bioLabel.snp.bottom).offset(40)
+            make.top.equalTo(bioTextField.snp.bottom).offset(40)
             make.centerX.equalToSuperview()
             make.width.equalTo(100)
             make.height.equalTo(50)
@@ -121,13 +156,25 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     }
     
     @objc func saveButtonTapped() {
-        navigationController?.popViewController(animated: true)
         guard let selectedImage = profileImageView.image else {
             print("Error: No image selected.")
             return
         }
+        uploadProfileImage(selectedImage) { [weak self] url in
+            guard let self = self, let imageUrl = url?.absoluteString else { return }
+            
+            // Use the existing bio if the user hasn't changed it
+            let bioText = self.bioTextField.text?.isEmpty == false ? self.bioTextField.text! : self.bioTextField.placeholder ?? ""
+            
+            let data: [String: Any] = ["profileimageUrl": imageUrl, "bio": bioText]
+            self.updateFirestoreData(data) {
+                NotificationCenter.default.post(name: .didUpdateProfileImage, object: nil)
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
         handleSaveButtonTapped(selectedImage: selectedImage)
     }
+
         func handleSaveButtonTapped(selectedImage: UIImage) {
             uploadProfileImage(selectedImage) { [weak self] url in
                 guard let self = self else { return }
@@ -155,39 +202,47 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         profileImageView.image = selectedImage
         placeholderLabel.isHidden = true
     }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        
-        picker.dismiss(animated: true, completion: nil)
-    }
+ 
     func uploadProfileImage(_ image: UIImage, completion: @escaping (URL?) -> Void) {
-        guard let imageDate = image.jpegData(compressionQuality: 0.75) else {
+        guard let imageData = image.jpegData(compressionQuality: 0.75) else {
             print("Error: Failed to convert image to JPEG data.")
             completion(nil)
             return
         }
-        let userID = Auth.auth().currentUser?.uid ?? "user"
-        let storageRef = Storage.storage().reference().child("profile_images/\(userID)_profile.jpg")
-        
-        storageRef.putData(imageDate, metadata: nil) { metadata, error in
+
+        guard let userID = Auth.auth().currentUser?.uid else {
+            print("Error: No authenticated user found")
+            completion(nil)
+            return
+        }
+
+        let storageRef = Storage.storage().reference().child("profile_images").child("\(userID).jpg")
+        storageRef.putData(imageData, metadata: nil) { metadata, error in
             if let error = error {
-                print("Error: Failed to upload image \(error.localizedDescription)")
+                print("Failed to upload image: \(error.localizedDescription)")
                 completion(nil)
                 return
             }
-            
             storageRef.downloadURL { url, error in
-                if let error = error {
-                    print("Error: Failed to get download URL \(error.localizedDescription)")
+                if let url = url {
+                    let data: [String: Any] = ["profileImageUrl": url.absoluteString]
+                    Firestore.firestore().collection("users").document(userID).updateData(data) { error in
+                        if let error = error {
+                            print("Failed to update profile image URL: \(error.localizedDescription)")
+                        } else {
+                            print("Successfully updated profile image URL")
+                            NotificationCenter.default.post(name: .didUpdateProfileImage, object: nil)
+                        }
+                        completion(url)
+                    }
+                } else {
+                    print("Failed to get download URL: \(error?.localizedDescription ?? "Unknown error")")
                     completion(nil)
-                } else if let url = url {
-                    print("Image uploaded successfully. URL: \(url.absoluteString)")
-                    completion(url)
-
                 }
             }
         }
     }
+
     func saveProfileImageUrlToFirestore(url: URL) {
         let db = Firestore.firestore()
         guard let userID = Auth.auth().currentUser?.uid else { return }
@@ -203,7 +258,7 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                 print("Error: User document does not exist.")
                 return
             }
-            userRef.updateData(["profileImageURL": url.absoluteString]) { error in
+            userRef.updateData(["profileImageUrl": url.absoluteString]) { error in
                 if let error = error {
                     print("Failed to save profile image URL to Firestore: \(error)")
                 } else {
@@ -212,5 +267,46 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             }
         }
     }
+    private func updateFirestoreData(_ data: [String: Any], completion: (() -> Void)? = nil) {
+            guard let userID = Auth.auth().currentUser?.uid else { return }
+            let userRef = Firestore.firestore().collection("users").document(userID)
+            userRef.updateData(data) { error in
+                if let error = error {
+                    print("Failed to update Firestore: \(error)")
+                } else {
+                    print("Successfully updated Firestore.")
+                    completion?()
+                }
+            }
+        }
+
+    func saveBioToFirestore(bio: String) {
+        let db = Firestore.firestore()
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        
+        let userRef = db.collection("users").document(userID)
+        userRef.getDocument { document, error in
+            if let error = error {
+                print("Failed to fetch user document for bio \(error.localizedDescription)")
+                return
+            }
+            
+            guard document?.exists == true else {
+                print("Error: User document does not exist.")
+                return
+            }
+            
+            userRef.updateData(["bio" : bio]) { error in
+                if let error = error {
+                    print("Failed to save bio to Firestore: \(error)")
+                } else {
+                    print("Bio successfully saved!  ")
+                }
+            }
+        }
+    }
+    
+    
+    
 }
     
