@@ -247,6 +247,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             make.top.equalTo(usernameLabel.snp.bottom).offset(20)
             make.leading.equalTo(profileImageView.snp.trailing).offset(30)
             //make.width.equalTo(120)
+            make.height.equalTo(30)
             //make.trailing.equalTo(logOutButton.snp.leading).offset(-10)
         }
         logOutButton.snp.makeConstraints { make in
