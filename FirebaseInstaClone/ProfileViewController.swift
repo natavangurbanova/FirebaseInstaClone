@@ -86,9 +86,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     private lazy var statsStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
         stack.axis = .horizontal
-        statsStackView.layer.borderColor = UIColor.lightGray.cgColor
-        statsStackView.layer.borderWidth = 1.0
-        statsStackView.layer.cornerRadius = 5
+        stack.layer.borderColor = UIColor.lightGray.cgColor
+        stack.layer.borderWidth = 1.0
+        stack.layer.cornerRadius = 5
         stack.distribution = .fillEqually
         stack.spacing = 8
         return stack
@@ -247,7 +247,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             make.top.equalTo(usernameLabel.snp.bottom).offset(20)
             make.leading.equalTo(profileImageView.snp.trailing).offset(30)
             //make.width.equalTo(120)
-            make.height.equalTo(40)
             //make.trailing.equalTo(logOutButton.snp.leading).offset(-10)
         }
         logOutButton.snp.makeConstraints { make in
