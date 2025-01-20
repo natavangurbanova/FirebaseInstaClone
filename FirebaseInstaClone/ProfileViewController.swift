@@ -152,8 +152,11 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         let postsRef = Firestore.firestore().collection("posts").whereField("ownerId", isEqualTo: userID)
         postsRef.getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
+            
             if let count = snapshot?.documents.count {
                 self.postsLabel.text = "\(count)\nPosts"
+                self.collectionView.reloadData()
+                self.placeholderView.isHidden = count > 0
             } else {
                 if let error = error {
                     print("Error fetching data: \(error.localizedDescription)")
@@ -161,6 +164,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
     }
+
     func updateFollowerCount(for userID: String) {
         let followersRef = Firestore.firestore().collection("users").document(userID).collection("followers")
         followersRef.getDocuments { snapshot, error in
@@ -317,7 +321,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(statsStackView.snp.bottom).offset(20)
-            make.left.right.bottom.equalToSuperview()
+            make.left.equalToSuperview().offset(8)
+            make.right.equalToSuperview().offset(-8)
+            make.bottom.equalToSuperview().offset(-8)
         }
     }
     
