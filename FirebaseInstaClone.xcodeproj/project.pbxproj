@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		249B1C4CD207D7AF8BBEEC75 /* Pods_FirebaseInstaClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7892201AB64EEEE5E7A3BF0 /* Pods_FirebaseInstaClone.framework */; };
+		CE3CA6D52D399A9700C1F107 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CA6D42D399A9700C1F107 /* Post.swift */; };
+		CE3CA6D72D399AE500C1F107 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CA6D62D399AE500C1F107 /* FeedCell.swift */; };
+		CE3CA6D92D3ADF1300C1F107 /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CA6D82D3ADF1300C1F107 /* PostCell.swift */; };
+		CE3CA6DB2D3AE75300C1F107 /* FullImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3CA6DA2D3AE75300C1F107 /* FullImageViewController.swift */; };
 		CE40AEDF2C96DCD50092F1FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEDE2C96DCD50092F1FA /* AppDelegate.swift */; };
 		CE40AEE12C96DCD50092F1FA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEE02C96DCD50092F1FA /* SceneDelegate.swift */; };
 		CE40AEE32C96DCD50092F1FA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEE22C96DCD50092F1FA /* ViewController.swift */; };
@@ -26,6 +30,10 @@
 		1CC1F8ADA4528E9A6EC36817 /* Pods-FirebaseInstaClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirebaseInstaClone.debug.xcconfig"; path = "Target Support Files/Pods-FirebaseInstaClone/Pods-FirebaseInstaClone.debug.xcconfig"; sourceTree = "<group>"; };
 		A82F66F111005E6D7CF128C7 /* Pods-FirebaseInstaClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirebaseInstaClone.release.xcconfig"; path = "Target Support Files/Pods-FirebaseInstaClone/Pods-FirebaseInstaClone.release.xcconfig"; sourceTree = "<group>"; };
 		B7892201AB64EEEE5E7A3BF0 /* Pods_FirebaseInstaClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirebaseInstaClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE3CA6D42D399A9700C1F107 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		CE3CA6D62D399AE500C1F107 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
+		CE3CA6D82D3ADF1300C1F107 /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
+		CE3CA6DA2D3AE75300C1F107 /* FullImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullImageViewController.swift; sourceTree = "<group>"; };
 		CE40AEDB2C96DCD50092F1FA /* FirebaseInstaClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirebaseInstaClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE40AEDE2C96DCD50092F1FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CE40AEE02C96DCD50092F1FA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -98,8 +106,12 @@
 				CEA6E6D02CC0305D006464A2 /* SignUpViewController.swift */,
 				CE40AEF82C99D7C30092F1FA /* TabBarViewController.swift */,
 				CE40AEF42C99CED70092F1FA /* FeedViewController.swift */,
+				CE3CA6D62D399AE500C1F107 /* FeedCell.swift */,
 				CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */,
 				CE40AEF62C99D0740092F1FA /* ProfileViewController.swift */,
+				CE3CA6D42D399A9700C1F107 /* Post.swift */,
+				CE3CA6D82D3ADF1300C1F107 /* PostCell.swift */,
+				CE3CA6DA2D3AE75300C1F107 /* FullImageViewController.swift */,
 				CEA6E6D22CCFDBF8006464A2 /* EditProfileViewController.swift */,
 				CE40AEE72C96DCD70092F1FA /* Assets.xcassets */,
 				CE40AEE92C96DCD70092F1FA /* LaunchScreen.storyboard */,
@@ -227,14 +239,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEA6E6D32CCFDBF8006464A2 /* EditProfileViewController.swift in Sources */,
+				CE3CA6D52D399A9700C1F107 /* Post.swift in Sources */,
 				CE40AEE32C96DCD50092F1FA /* ViewController.swift in Sources */,
 				CE40AEDF2C96DCD50092F1FA /* AppDelegate.swift in Sources */,
+				CE3CA6D72D399AE500C1F107 /* FeedCell.swift in Sources */,
 				CEA6E6D12CC0305D006464A2 /* SignUpViewController.swift in Sources */,
 				CEFF24FF2D1470AB009E95E8 /* UploadViewController.swift in Sources */,
 				CE40AEF72C99D0740092F1FA /* ProfileViewController.swift in Sources */,
+				CE3CA6DB2D3AE75300C1F107 /* FullImageViewController.swift in Sources */,
 				CE40AEF52C99CED70092F1FA /* FeedViewController.swift in Sources */,
 				CE40AEF92C99D7C30092F1FA /* TabBarViewController.swift in Sources */,
 				CE40AEE12C96DCD50092F1FA /* SceneDelegate.swift in Sources */,
+				CE3CA6D92D3ADF1300C1F107 /* PostCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
