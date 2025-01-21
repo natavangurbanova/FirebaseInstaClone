@@ -10,10 +10,9 @@ import FirebaseStorage
 import FirebaseAuth
 import FirebaseFirestore
 
-
 class UploadViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-        let uploadButton: UIButton = {
+    let uploadButton: UIButton = {
         let button = UIButton()
         button.setTitle("Upload", for: .normal)
         button.backgroundColor = .black
@@ -67,7 +66,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
         
         storageRef.putData(imageData, metadata: nil) { metadata, error in
-            if let error = error    {
+            if let error = error {
                 print("Error uploading image: \(error.localizedDescription)")
                 return
             }
@@ -82,25 +81,33 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
             }
         }
     }
+    
     private func savePostToFirestore(imageUrl: String) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
         let postData: [String: Any] = [
-            "userID": userID,
+            "ownerId": userID,
             "imageUrl": imageUrl,
             "caption": "",
             "timestamp": Timestamp(date: Date())
         ]
         
-        db.collection("posts").document(userID).collection("userPosts").addDocument(data: postData) { error in
+        db.collection("posts").addDocument(data: postData) { error in
             if let error = error {
                 print("Error saving post: \(error.localizedDescription)")
             } else {
                 print("Post saved successfully!")
-                self.tabBarController?.selectedIndex = 1
+                self.updateProfilePostCount()
+                self.tabBarController?.selectedIndex = 1 // Switch to Profile tab after upload
             }
-            
         }
     }
     
+    private func updateProfilePostCount() {
+        if let tabBarVC = self.tabBarController,
+           let profileVC = (tabBarVC.viewControllers?[1] as? UINavigationController)?.topViewController as? ProfileViewController,
+           let userID = Auth.auth().currentUser?.uid {
+            profileVC.updatePostCount(for: userID)
+        }
+    }
 }
