@@ -86,9 +86,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     private lazy var statsStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
         stack.axis = .horizontal
-        stack.layer.borderColor = UIColor.lightGray.cgColor
-        stack.layer.borderWidth = 1.0
-        stack.layer.cornerRadius = 5
         stack.distribution = .fillEqually
         stack.spacing = 8
         return stack
@@ -131,7 +128,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         view.backgroundColor = .white
         setupViews()
         setupStackView()
-        setupPlaceholderView()
         setupCollectionView()
         loadPosts()
     }
@@ -152,11 +148,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         let postsRef = Firestore.firestore().collection("posts").whereField("ownerId", isEqualTo: userID)
         postsRef.getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
-            
             if let count = snapshot?.documents.count {
                 self.postsLabel.text = "\(count)\nPosts"
-                self.collectionView.reloadData()
-                self.placeholderView.isHidden = count > 0
             } else {
                 if let error = error {
                     print("Error fetching data: \(error.localizedDescription)")
@@ -164,7 +157,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
     }
-
     func updateFollowerCount(for userID: String) {
         let followersRef = Firestore.firestore().collection("users").document(userID).collection("followers")
         followersRef.getDocuments { snapshot, error in
@@ -190,7 +182,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         }
     }
 
-    
     func loadProfileData() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
@@ -204,7 +195,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 // Use username from Firestore or fallback to defaultUsername
                 self.usernameLabel.text = data?["username"] as? String ?? "No username"
 
-                
                 // Fetch bio
                 self.bioLabel.text = data?["bio"] as? String ?? "Add your bio"
                 
@@ -222,7 +212,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         }
     }
 
-   
     private func setupViews() {
         view.addSubview(profileImageView)
         view.addSubview(usernameLabel)
@@ -250,18 +239,13 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         editProfileButton.snp.makeConstraints { make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(20)
             make.leading.equalTo(profileImageView.snp.trailing).offset(30)
-            //make.width.equalTo(120)
             make.height.equalTo(30)
-            //make.trailing.equalTo(logOutButton.snp.leading).offset(-10)
         }
         logOutButton.snp.makeConstraints { make in
             make.top.equalTo(editProfileButton)
-            //make.top.equalTo(usernameLabel.snp.bottom).offset(20)
             make.leading.equalTo(editProfileButton.snp.trailing).offset(10)
             make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-20)
             make.width.equalTo(editProfileButton)
-            //make.width.equalTo(80)
-            //make.height.equalTo(40)
         }
     }
     
@@ -321,9 +305,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(statsStackView.snp.bottom).offset(20)
-            make.left.equalToSuperview().offset(8)
-            make.right.equalToSuperview().offset(-8)
-            make.bottom.equalToSuperview().offset(-8)
+            make.left.right.bottom.equalToSuperview()
         }
     }
     
@@ -338,7 +320,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                }
                     self.posts = snapshot?.documents.compactMap { doc -> Post in
                         let data = doc.data()
-                        //let imageUrl = data["imageUrl"] as? String ?? ""
                         return Post(id: doc.documentID, imageUrl: data["imageUrl"] as? String ?? "", caption: data["caption"] as? String ?? "")
                     } ?? []
             DispatchQueue.main.async {
@@ -380,8 +361,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             print("Error signing out %@", signOutError)
         }
     }
-
-    
 }
 
 extension Notification.Name {
