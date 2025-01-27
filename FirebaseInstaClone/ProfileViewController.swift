@@ -145,11 +145,14 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func updatePostCount(for userID: String) {
-        let postsRef = Firestore.firestore().collection("posts").whereField("ownerId", isEqualTo: userID)
+        let postsRef = Firestore.firestore().collection("posts").document(userID).collection("userPosts")
         postsRef.getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
+            
             if let count = snapshot?.documents.count {
                 self.postsLabel.text = "\(count)\nPosts"
+                self.collectionView.reloadData()
+                self.placeholderView.isHidden = count > 0
             } else {
                 if let error = error {
                     print("Error fetching data: \(error.localizedDescription)")
@@ -157,6 +160,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
     }
+
     func updateFollowerCount(for userID: String) {
         let followersRef = Firestore.firestore().collection("users").document(userID).collection("followers")
         followersRef.getDocuments { snapshot, error in
@@ -182,6 +186,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         }
     }
 
+    
     func loadProfileData() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
@@ -192,14 +197,10 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             if let document = document, document.exists {
                 let data = document.data()
                 
-                // Use username from Firestore or fallback to defaultUsername
                 self.usernameLabel.text = data?["username"] as? String ?? "No username"
-
-                // Fetch bio
                 self.bioLabel.text = data?["bio"] as? String ?? "Add your bio"
                 
-                // Fetch and load profile image
-                if let profileImageUrl = data?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
+                    if let profileImageUrl = data?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
                     print("Profile Image URL: \(profileImageUrl)") // Debug log
                     self.profileImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "person.circle"))
                 } else {
@@ -370,4 +371,3 @@ extension Notification.Name {
     static let didUpdateProfileImage = Notification.Name("didUpdateProfileImage")
     static let didUpdateProfileData = Notification.Name("didUpdateProfileData")
 }
-
