@@ -306,7 +306,9 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(statsStackView.snp.bottom).offset(20)
-            make.left.right.bottom.equalToSuperview()
+            make.left.equalToSuperview().offset(8)
+            make.right.equalToSuperview().offset(-8)
+            make.bottom.equalToSuperview().offset(-8)
         }
     }
     
