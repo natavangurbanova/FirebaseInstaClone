@@ -128,6 +128,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         view.backgroundColor = .white
         setupViews()
         setupStackView()
+        setupPlaceholderView()
         setupCollectionView()
         loadPosts()
     }
@@ -212,8 +213,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
     }
-
-   
     private func setupViews() {
         view.addSubview(profileImageView)
         view.addSubview(usernameLabel)
