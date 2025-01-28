@@ -81,7 +81,6 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
             }
         }
     }
-    
     private func savePostToFirestore(imageUrl: String) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
@@ -98,7 +97,7 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
             } else {
                 print("Post saved successfully!")
                 self.updateProfilePostCount()
-                self.tabBarController?.selectedIndex = 1 // Switch to Profile tab after upload
+                self.tabBarController?.selectedIndex = 1
             }
         }
     }
