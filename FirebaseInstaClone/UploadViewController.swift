@@ -81,23 +81,23 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
             }
         }
     }
+    
     private func savePostToFirestore(imageUrl: String) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
         let postData: [String: Any] = [
-            "ownerId": userID,
+            "userID": userID,
             "imageUrl": imageUrl,
             "caption": "",
             "timestamp": Timestamp(date: Date())
         ]
         
-        db.collection("posts").addDocument(data: postData) { error in
-            if let error = error {
-                print("Error saving post: \(error.localizedDescription)")
-            } else {
-                print("Post saved successfully!")
-                self.updateProfilePostCount()
-                self.tabBarController?.selectedIndex = 1
+        db.collection("posts").document(userID).collection("userPosts").addDocument(data: postData) { error in
+                    if let error = error {
+                        print("Error saving post: \(error.localizedDescription)")
+                    } else {
+                        print("Post saved successfully!")
+                        self.tabBarController?.selectedIndex = 1
             }
         }
     }

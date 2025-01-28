@@ -240,7 +240,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         editProfileButton.snp.makeConstraints { make in
             make.top.equalTo(usernameLabel.snp.bottom).offset(20)
             make.leading.equalTo(profileImageView.snp.trailing).offset(30)
-            make.height.equalTo(40)
+            make.height.equalTo(30)
         }
         logOutButton.snp.makeConstraints { make in
             make.top.equalTo(editProfileButton)
