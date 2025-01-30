@@ -90,48 +90,60 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         stack.spacing = 8
         return stack
     }()
+        
+    private let placeholderStackView: UIStackView = {
+        let imageView = UIImageView(image: UIImage(systemName: "camera.fill"))
+        imageView.tintColor = .gray
+        imageView.contentMode = .scaleAspectFit
+        imageView.snp.makeConstraints { make in
+            make.width.height.equalTo(50)
+        }
+        let titleLabel = UILabel()
+        titleLabel.text = "Share photos"
+        titleLabel.font = .boldSystemFont(ofSize: 18)
+        titleLabel.textAlignment = .center
+        
+        let descriptionLabel = UILabel()
+        descriptionLabel.text = "When you share photos, they will appear on your profile."
+        descriptionLabel.font = .systemFont(ofSize: 14)
+        descriptionLabel.textAlignment = .center
+        descriptionLabel.numberOfLines = 2
+        
+        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, descriptionLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.alignment = .center
+        stackView.isHidden = true
+        
+        return stackView
+    }()
     
     private var posts: [Post] = []
     private var collectionView: UICollectionView!
-    
-    private let placeholderView = UIView()
-        private let cameraImageView: UIImageView = {
-            let imageView = UIImageView(image: UIImage(systemName: "camera"))
-            imageView.tintColor = .gray
-            imageView.contentMode = .scaleAspectFit
-            return imageView
-        }()
-        private let sharePhotosLabel: UILabel = {
-            let label = UILabel()
-            label.text = "Share photos"
-            label.font = UIFont.boldSystemFont(ofSize: 24)
-            label.textColor = .darkGray
-            return label
-        }()
-        private let sharePhotosDescriptionLabel: UILabel = {
-            let label = UILabel()
-            label.text = "When you share photos, they will appear on your profile"
-            label.font = UIFont.systemFont(ofSize: 14)
-            label.textColor = .gray
-            label.textAlignment = .center
-            label.numberOfLines = 0
-            return label
-        }()
 
-    
+        
     //MARK: Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(reloadProfileData), name: .didUpdateProfileImage, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadProfileData), name: .didUpdateProfileData, object: nil)
 
         view.backgroundColor = .white
+        
         setupViews()
         setupStackView()
         setupPlaceholderView()
         setupCollectionView()
+        
         loadPosts()
+        updateUI()
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     @objc func reloadProfileData() {
         loadProfileData()
     }
@@ -152,8 +164,14 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             
             if let count = snapshot?.documents.count {
                 self.postsLabel.text = "\(count)\nPosts"
+                if count > 0 {
+                    self.placeholderStackView.isHidden = true
+                    self.collectionView.isHidden = false
+                } else {
+                    self.placeholderStackView.isHidden = false
+                    self.collectionView.isHidden = true
+                }
                 self.collectionView.reloadData()
-                self.placeholderView.isHidden = count > 0
             } else {
                 if let error = error {
                     print("Error fetching data: \(error.localizedDescription)")
@@ -185,6 +203,12 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 }
             }
         }
+    }
+    
+    private func updateUI() {
+        let hasPosts = !posts.isEmpty
+        collectionView.isHidden = !hasPosts
+        placeholderStackView.isHidden = hasPosts
     }
 
     
@@ -251,31 +275,13 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     private func setupPlaceholderView() {
-            view.addSubview(placeholderView)
-            placeholderView.snp.makeConstraints { make in
-                make.top.equalTo(statsStackView.snp.bottom).offset(20)
-                make.left.right.equalToSuperview().inset(20)
-                make.bottom.equalToSuperview().inset(50) // Adjust as needed
-            }
-            
-            placeholderView.addSubview(cameraImageView)
-            cameraImageView.snp.makeConstraints { make in
-                make.centerX.equalToSuperview()
-                make.top.equalToSuperview().offset(30)
-                make.width.height.equalTo(50)
-            }
-
-            placeholderView.addSubview(sharePhotosLabel)
-            sharePhotosLabel.snp.makeConstraints { make in
-                make.centerX.equalToSuperview()
-                make.top.equalTo(cameraImageView.snp.bottom).offset(16)
-            }
-
-            placeholderView.addSubview(sharePhotosDescriptionLabel)
-            sharePhotosDescriptionLabel.snp.makeConstraints { make in
-                make.centerX.equalToSuperview()
-                make.top.equalTo(sharePhotosLabel.snp.bottom).offset(8)
-                make.left.right.equalToSuperview().inset(20)
+        view.addSubview(placeholderStackView)
+        
+        placeholderStackView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(statsStackView.snp.bottom).offset(40)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
             }
         }
     
@@ -312,9 +318,6 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             make.bottom.equalToSuperview().offset(-8)
         }
         view.layoutIfNeeded()
-        print("View width:", view.frame.width)
-        print("CollectionView Width:", collectionView.frame.width)
-
     }
     
     private func loadPosts() {

@@ -39,7 +39,6 @@ class PostCell: UICollectionViewCell {
     }
     override func layoutSubviews() {
         super.layoutSubviews()
-        print("Cell frame:", self.frame)
     }
 
     
