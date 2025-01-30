@@ -292,7 +292,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        let cellSize = (view.frame.width - 2) / 3
+        let totalspacing: CGFloat = 2
+        let cellSize = floor(view.frame.width - 16 - totalspacing) / 3
         layout.itemSize = CGSize(width: cellSize, height: cellSize)
         layout.minimumInteritemSpacing = 1
         layout.minimumLineSpacing = 1
@@ -310,6 +311,10 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             make.right.equalToSuperview().offset(-8)
             make.bottom.equalToSuperview().offset(-8)
         }
+        view.layoutIfNeeded()
+        print("View width:", view.frame.width)
+        print("CollectionView Width:", collectionView.frame.width)
+
     }
     
     private func loadPosts() {

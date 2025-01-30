@@ -37,5 +37,10 @@ class PostCell: UICollectionViewCell {
             imageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "photo"))
         }
     }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        print("Cell frame:", self.frame)
+    }
+
     
 }
