@@ -161,9 +161,11 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             return
         }
         uploadProfileImage(selectedImage) { [weak self] url in
-            guard let self = self, let imageUrl = url?.absoluteString else { return }
+            guard let self = self, let imageUrl = url?.absoluteString else {
+                print("Failed to get download URL")
+                return
+            }
             
-            // Use the existing bio if the user hasn't changed it
             let bioText = self.bioTextField.text?.isEmpty == false ? self.bioTextField.text! : self.bioTextField.placeholder ?? ""
             
             let data: [String: Any] = ["profileimageUrl": imageUrl, "bio": bioText]
@@ -224,19 +226,14 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                 return
             }
             storageRef.downloadURL { url, error in
-                if let url = url {
-                    let data: [String: Any] = ["profileImageUrl": url.absoluteString]
-                    Firestore.firestore().collection("users").document(userID).updateData(data) { error in
-                        if let error = error {
-                            print("Failed to update profile image URL: \(error.localizedDescription)")
-                        } else {
-                            print("Successfully updated profile image URL")
-                            NotificationCenter.default.post(name: .didUpdateProfileImage, object: nil)
-                        }
-                        completion(url)
-                    }
+                if let error = error {
+                    print("Failed to get download URL: \(error.localizedDescription)")
+                    completion(nil)
+                        } else if let url = url {
+                            print("Successfully uploaded image. Download URL: \(url.absoluteString)")
+                            completion(url)
                 } else {
-                    print("Failed to get download URL: \(error?.localizedDescription ?? "Unknown error")")
+                    print("Unknown error occurred while fetching download URL")
                     completion(nil)
                 }
             }

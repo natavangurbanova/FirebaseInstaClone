@@ -155,14 +155,17 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             updatePostCount(for: currentUserId)
             updateFollowerCount(for: currentUserId)
             updateFollowingCount(for: currentUserId)
+        print("Authenticated User ID: \(currentUserId)")
     }
     
     func updatePostCount(for userID: String) {
+        print("Fetching posts for userID: \(userID)")     // Debug line
         let postsRef = Firestore.firestore().collection("posts").document(userID).collection("userPosts")
         postsRef.getDocuments { [weak self] snapshot, error in
             guard let self = self else { return }
             
             if let count = snapshot?.documents.count {
+                print("Post count for \(userID): \(count)")      // Debugging line
                 self.postsLabel.text = "\(count)\nPosts"
                 if count > 0 {
                     self.placeholderStackView.isHidden = true
@@ -174,7 +177,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 self.collectionView.reloadData()
             } else {
                 if let error = error {
-                    print("Error fetching data: \(error.localizedDescription)")
+                    print("Error fetching post data: \(error.localizedDescription)")
                 }
             }
         }
