@@ -165,7 +165,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             guard let self = self else { return }
             
             if let count = snapshot?.documents.count {
-                print("Post count for \(userID): \(count)")      // Debugging line
+                print("Post count for \(userID): \(count)")  // Debug line
                 self.postsLabel.text = "\(count)\nPosts"
                 if count > 0 {
                     self.placeholderStackView.isHidden = true
