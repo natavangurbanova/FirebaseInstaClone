@@ -21,6 +21,10 @@
 		CE40AEF52C99CED70092F1FA /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEF42C99CED70092F1FA /* FeedViewController.swift */; };
 		CE40AEF72C99D0740092F1FA /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEF62C99D0740092F1FA /* ProfileViewController.swift */; };
 		CE40AEF92C99D7C30092F1FA /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE40AEF82C99D7C30092F1FA /* TabBarViewController.swift */; };
+		CE791F3D2D5A12190079F2CA /* UserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F3C2D5A12190079F2CA /* UserTableViewCell.swift */; };
+		CE791F3F2D5B61010079F2CA /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F3E2D5B61010079F2CA /* SearchViewController.swift */; };
+		CE791F432D5BD6830079F2CA /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F422D5BD6830079F2CA /* UserProfileViewController.swift */; };
+		CE791F452D5CC7170079F2CA /* FullUsersImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F442D5CC7170079F2CA /* FullUsersImageViewController.swift */; };
 		CEA6E6D12CC0305D006464A2 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA6E6D02CC0305D006464A2 /* SignUpViewController.swift */; };
 		CEA6E6D32CCFDBF8006464A2 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA6E6D22CCFDBF8006464A2 /* EditProfileViewController.swift */; };
 		CEFF24FF2D1470AB009E95E8 /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */; };
@@ -45,6 +49,10 @@
 		CE40AEF42C99CED70092F1FA /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		CE40AEF62C99D0740092F1FA /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		CE40AEF82C99D7C30092F1FA /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
+		CE791F3C2D5A12190079F2CA /* UserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTableViewCell.swift; sourceTree = "<group>"; };
+		CE791F3E2D5B61010079F2CA /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		CE791F422D5BD6830079F2CA /* UserProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		CE791F442D5CC7170079F2CA /* FullUsersImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullUsersImageViewController.swift; sourceTree = "<group>"; };
 		CEA6E6D02CC0305D006464A2 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		CEA6E6D22CCFDBF8006464A2 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
@@ -107,10 +115,14 @@
 				CE40AEF82C99D7C30092F1FA /* TabBarViewController.swift */,
 				CE40AEF42C99CED70092F1FA /* FeedViewController.swift */,
 				CE3CA6D62D399AE500C1F107 /* FeedCell.swift */,
-				CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */,
 				CE40AEF62C99D0740092F1FA /* ProfileViewController.swift */,
+				CE791F3E2D5B61010079F2CA /* SearchViewController.swift */,
+				CE791F3C2D5A12190079F2CA /* UserTableViewCell.swift */,
+				CE791F422D5BD6830079F2CA /* UserProfileViewController.swift */,
+				CE791F442D5CC7170079F2CA /* FullUsersImageViewController.swift */,
 				CE3CA6D42D399A9700C1F107 /* Post.swift */,
 				CE3CA6D82D3ADF1300C1F107 /* PostCell.swift */,
+				CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */,
 				CE3CA6DA2D3AE75300C1F107 /* FullImageViewController.swift */,
 				CEA6E6D22CCFDBF8006464A2 /* EditProfileViewController.swift */,
 				CE40AEE72C96DCD70092F1FA /* Assets.xcassets */,
@@ -238,13 +250,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE791F3F2D5B61010079F2CA /* SearchViewController.swift in Sources */,
 				CEA6E6D32CCFDBF8006464A2 /* EditProfileViewController.swift in Sources */,
 				CE3CA6D52D399A9700C1F107 /* Post.swift in Sources */,
 				CE40AEE32C96DCD50092F1FA /* ViewController.swift in Sources */,
 				CE40AEDF2C96DCD50092F1FA /* AppDelegate.swift in Sources */,
+				CE791F3D2D5A12190079F2CA /* UserTableViewCell.swift in Sources */,
 				CE3CA6D72D399AE500C1F107 /* FeedCell.swift in Sources */,
 				CEA6E6D12CC0305D006464A2 /* SignUpViewController.swift in Sources */,
 				CEFF24FF2D1470AB009E95E8 /* UploadViewController.swift in Sources */,
+				CE791F432D5BD6830079F2CA /* UserProfileViewController.swift in Sources */,
+				CE791F452D5CC7170079F2CA /* FullUsersImageViewController.swift in Sources */,
 				CE40AEF72C99D0740092F1FA /* ProfileViewController.swift in Sources */,
 				CE3CA6DB2D3AE75300C1F107 /* FullImageViewController.swift in Sources */,
 				CE40AEF52C99CED70092F1FA /* FeedViewController.swift in Sources */,

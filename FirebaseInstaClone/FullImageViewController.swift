@@ -10,7 +10,7 @@ import SnapKit
 
 class FullImageViewController: UIViewController {
     
-    var postImageURL: String? // URL of the image to be displayed
+    var postImageURL: String?
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -29,7 +29,7 @@ class FullImageViewController: UIViewController {
     private func setupImageView() {
         view.addSubview(imageView)
         imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview() // Fullscreen layout
+            make.edges.equalToSuperview()
         }
     }
     
