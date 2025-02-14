@@ -150,12 +150,13 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        loadProfileData()
-        let currentUserId = Auth.auth().currentUser?.uid ?? ""
+        
+        guard   let currentUserId = Auth.auth().currentUser?.uid else { return }
+            loadProfileData()
             updatePostCount(for: currentUserId)
             updateFollowerCount(for: currentUserId)
             updateFollowingCount(for: currentUserId)
-        print("Authenticated User ID: \(currentUserId)")
+            print("Authenticated User ID: \(currentUserId)")
     }
     
     func updatePostCount(for userID: String) {
@@ -184,29 +185,32 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     }
 
     func updateFollowerCount(for userID: String) {
-        let followersRef = Firestore.firestore().collection("users").document(userID).collection("followers")
+        let followersRef = Firestore.firestore().collection("followers").document(userID).collection("userFollowers")
         followersRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching followers count: \(error.localizedDescription)")
+            }
             if let count = snapshot?.documents.count {
                 self.followersLabel.text = "\(count)\nFollowers"
             } else {
-                if let error = error {
-                    print("Error fetching data: \(error.localizedDescription)")
-                }
+                print("No followers data found for: \(userID)")
             }
         }
     }
     func updateFollowingCount(for userID: String) {
-        let followingRef = Firestore.firestore().collection("users").document(userID).collection("following")
+        let followingRef = Firestore.firestore().collection("following").document(userID).collection("userFollowing")
         followingRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching following count: \(error.localizedDescription)")
+                return
+            }
             if let count = snapshot?.documents.count {
                 self.followingLabel.text = "\(count)\nFollowing"
             } else {
-                if let error = error {
-                    print("Error fetching data: \(error.localizedDescription)")
+                print("No following data found for \(userID)")
                 }
             }
         }
-    }
     
     private func updateUI() {
         let hasPosts = !posts.isEmpty
