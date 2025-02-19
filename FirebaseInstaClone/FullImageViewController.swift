@@ -8,7 +8,8 @@
 import UIKit
 import SnapKit
 import SDWebImage
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 class FullImageViewController: UIViewController {
     
@@ -37,6 +38,13 @@ class FullImageViewController: UIViewController {
         return label
     }()
     
+    private let moreButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        button.tintColor = .black
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -48,6 +56,7 @@ class FullImageViewController: UIViewController {
         view.addSubview(imageView)
         view.addSubview(likeButton)
         view.addSubview(likesLabel)
+        view.addSubview(moreButton)
         
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -61,7 +70,13 @@ class FullImageViewController: UIViewController {
             make.centerY.equalTo(likeButton)
             make.leading.equalTo(likeButton.snp.trailing).offset(10)
         }
+        moreButton.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+            make.width.height.equalTo(30)
+        }
         likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
+        moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
     }
     
     private func configureUI() {
@@ -88,6 +103,30 @@ class FullImageViewController: UIViewController {
         delegate?.didUpdatePost(post)
     }
     
+    @objc private func moreButtonTapped() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Delete Post", style: .destructive, handler: { [weak self] _ in
+            self?.deletePost()
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(actionSheet, animated: true, completion: nil)
+    }
+    
+    private func deletePost() {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        let db = Firestore.firestore()
+        let postRef = db.collection("posts").document(userID).collection("userPosts").document(post.id)
+        postRef.delete { [weak self] error in
+            if let error = error {
+                print("Error deleting post: \(error.localizedDescription)")
+            } else {
+                print("Post deleted successfully")
+                self?.delegate?.didDeletePost(self?.post)
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
+    
     private func updateLikeCountInFirestore() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
@@ -107,4 +146,5 @@ class FullImageViewController: UIViewController {
 }
 protocol FullImageViewControllerDelegate: AnyObject {
     func didUpdatePost(_ post: Post)
+    func didDeletePost(_ post: Post?)
 }

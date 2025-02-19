@@ -153,6 +153,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         
         guard   let currentUserId = Auth.auth().currentUser?.uid else { return }
             loadProfileData()
+            loadPosts()
             updatePostCount(for: currentUserId)
             updateFollowerCount(for: currentUserId)
             updateFollowingCount(for: currentUserId)
@@ -392,5 +393,11 @@ extension ProfileViewController: FullImageViewControllerDelegate {
             posts[index] = post
             collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
         }
+    }
+    func didDeletePost(_ post: Post?) {
+        guard let post = post, let index = posts.firstIndex(where: { $0.id == post.id }) else { return }
+        posts.remove(at: index)
+        collectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
+        updatePostCount(for: Auth.auth().currentUser?.uid ?? "")
     }
 }
