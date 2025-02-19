@@ -338,7 +338,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                }
                     self.posts = snapshot?.documents.compactMap { doc -> Post in
                         let data = doc.data()
-                        return Post(id: doc.documentID, imageUrl: data["imageUrl"] as? String ?? "", caption: data["caption"] as? String ?? "")
+                        return Post(id: doc.documentID, imageUrl: data["imageUrl"] as? String ?? "", caption: data["caption"] as? String ?? "", likes: data["likes"] as? Int ?? 0)
                     } ?? []
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -346,22 +346,23 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         }
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-           return posts.count
-       }
-
-       func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-           let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostCell", for: indexPath) as! PostCell
-           let post = posts[indexPath.row]
-           cell.configure(with: post.imageUrl)
-           return cell
-       }
-
-       func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-           let post = posts[indexPath.row]
-           let fullImageVC = FullImageViewController()
-           fullImageVC.postImageURL = post.imageUrl
-           navigationController?.pushViewController(fullImageVC, animated: true)
-       }
+        return posts.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PostCell", for: indexPath) as! PostCell
+        let post = posts[indexPath.row]
+        cell.configure(with: post.imageUrl)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let post = posts[indexPath.row]
+        let fullImageVC = FullImageViewController()
+        fullImageVC.post = post
+        fullImageVC.delegate =  self
+        navigationController?.pushViewController(fullImageVC, animated: true)
+    }
     
     @objc func editProfileTapped() {
         let editProfileVC = EditProfileViewController()
@@ -384,4 +385,12 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
 extension Notification.Name {
     static let didUpdateProfileImage = Notification.Name("didUpdateProfileImage")
     static let didUpdateProfileData = Notification.Name("didUpdateProfileData")
+}
+extension ProfileViewController: FullImageViewControllerDelegate {
+    func didUpdatePost(_ post: Post) {
+        if let index = posts.firstIndex(where: { $0.id == post.id }) {
+            posts[index] = post
+            collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+        }
+    }
 }

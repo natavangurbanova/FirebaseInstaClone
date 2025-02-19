@@ -13,10 +13,14 @@ struct Post {
     let id: String
     let imageUrl: String
     let caption: String
+    var likes: Int
+    var likedBy: [String]
     
-    init(id: String, imageUrl: String, caption: String) {
+    init(id: String, imageUrl: String, caption: String, likes: Int = 0, likedBy: [String] = []) {
         self.id = id
         self.imageUrl = imageUrl
         self.caption = caption
+        self.likes = likes
+        self.likedBy = likedBy
     }
 }

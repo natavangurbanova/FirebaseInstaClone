@@ -13,7 +13,7 @@ import SDWebImage
 class PostCell: UICollectionViewCell {
     
     private let imageView = UIImageView()
-    
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -36,10 +36,5 @@ class PostCell: UICollectionViewCell {
         if let url = URL(string: imageUrl) {
             imageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "photo"))
         }
-    }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
-
-    
+    }    
 }
