@@ -12,7 +12,7 @@ class TabBarViewController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
         let feedVC = FeedViewController()
         let profileVC = ProfileViewController()
         let uploadVC = UploadViewController()
@@ -30,11 +30,4 @@ class TabBarViewController: UITabBarController {
         viewControllers = [feedNavController,searchNavController,uploadNavController,profileNavController]
         
     }
-    
-    
-    
-    
-    
-    
-    
 }

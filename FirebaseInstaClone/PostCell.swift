@@ -13,7 +13,7 @@ import SDWebImage
 class PostCell: UICollectionViewCell {
     
     private let imageView = UIImageView()
-        
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()

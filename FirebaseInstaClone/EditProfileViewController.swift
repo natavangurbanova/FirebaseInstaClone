@@ -176,48 +176,48 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         }
         handleSaveButtonTapped(selectedImage: selectedImage)
     }
-
-        func handleSaveButtonTapped(selectedImage: UIImage) {
-            uploadProfileImage(selectedImage) { [weak self] url in
-                guard let self = self else { return }
-                if let url = url {
-                    // Save the download URL to Firestore
-                    self.saveProfileImageUrlToFirestore(url: url)
-                    
-                    // Notify ProfileVC to reload the image
-                    NotificationCenter.default.post(name: .didUpdateProfileImage, object: nil)
-                    
-                    // Navigate back to ProfileVC
-                    self.navigationController?.popViewController(animated: true)
-                } else {
-                    print("Failed to get download URL")
-                }
+    
+    func handleSaveButtonTapped(selectedImage: UIImage) {
+        uploadProfileImage(selectedImage) { [weak self] url in
+            guard let self = self else { return }
+            if let url = url {
+                // Save the download URL to Firestore
+                self.saveProfileImageUrlToFirestore(url: url)
+                
+                // Notify ProfileVC to reload the image
+                NotificationCenter.default.post(name: .didUpdateProfileImage, object: nil)
+                
+                // Navigate back to ProfileVC
+                self.navigationController?.popViewController(animated: true)
+            } else {
+                print("Failed to get download URL")
             }
         }
+    }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         guard let selectedImage = info[.originalImage] as? UIImage else {
-        print("No image selected")
-        return
-    }
+            print("No image selected")
+            return
+        }
         profileImageView.image = selectedImage
         placeholderLabel.isHidden = true
     }
- 
+    
     func uploadProfileImage(_ image: UIImage, completion: @escaping (URL?) -> Void) {
         guard let imageData = image.jpegData(compressionQuality: 0.75) else {
             print("Error: Failed to convert image to JPEG data.")
             completion(nil)
             return
         }
-
+        
         guard let userID = Auth.auth().currentUser?.uid else {
             print("Error: No authenticated user found")
             completion(nil)
             return
         }
-
+        
         let storageRef = Storage.storage().reference().child("profile_images").child("\(userID).jpg")
         storageRef.putData(imageData, metadata: nil) { metadata, error in
             if let error = error {
@@ -229,9 +229,9 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
                 if let error = error {
                     print("Failed to get download URL: \(error.localizedDescription)")
                     completion(nil)
-                        } else if let url = url {
-                            print("Successfully uploaded image. Download URL: \(url.absoluteString)")
-                            completion(url)
+                } else if let url = url {
+                    print("Successfully uploaded image. Download URL: \(url.absoluteString)")
+                    completion(url)
                 } else {
                     print("Unknown error occurred while fetching download URL")
                     completion(nil)
@@ -239,7 +239,7 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
             }
         }
     }
-
+    
     func saveProfileImageUrlToFirestore(url: URL) {
         let db = Firestore.firestore()
         guard let userID = Auth.auth().currentUser?.uid else { return }
@@ -265,18 +265,18 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
         }
     }
     private func updateFirestoreData(_ data: [String: Any], completion: (() -> Void)? = nil) {
-            guard let userID = Auth.auth().currentUser?.uid else { return }
-            let userRef = Firestore.firestore().collection("users").document(userID)
-            userRef.updateData(data) { error in
-                if let error = error {
-                    print("Failed to update Firestore: \(error)")
-                } else {
-                    print("Successfully updated Firestore.")
-                    completion?()
-                }
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        let userRef = Firestore.firestore().collection("users").document(userID)
+        userRef.updateData(data) { error in
+            if let error = error {
+                print("Failed to update Firestore: \(error)")
+            } else {
+                print("Successfully updated Firestore.")
+                completion?()
             }
         }
-
+    }
+    
     func saveBioToFirestore(bio: String) {
         let db = Firestore.firestore()
         guard let userID = Auth.auth().currentUser?.uid else { return }
@@ -306,4 +306,4 @@ class EditProfileViewController: UIViewController, UIImagePickerControllerDelega
     
     
 }
-    
+

@@ -93,11 +93,11 @@ class UploadViewController: UIViewController, UIImagePickerControllerDelegate, U
         ]
         
         db.collection("posts").document(userID).collection("userPosts").addDocument(data: postData) { error in
-                    if let error = error {
-                        print("Error saving post: \(error.localizedDescription)")
-                    } else {
-                        print("Post saved successfully!")
-                        self.tabBarController?.selectedIndex = 1
+            if let error = error {
+                print("Error saving post: \(error.localizedDescription)")
+            } else {
+                print("Post saved successfully!")
+                self.tabBarController?.selectedIndex = 1
             }
         }
     }

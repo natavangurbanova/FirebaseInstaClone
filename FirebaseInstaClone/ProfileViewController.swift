@@ -90,7 +90,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         stack.spacing = 8
         return stack
     }()
-        
+    
     private let placeholderStackView: UIStackView = {
         let imageView = UIImageView(image: UIImage(systemName: "camera.fill"))
         imageView.tintColor = .gray
@@ -120,15 +120,15 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     
     private var posts: [Post] = []
     private var collectionView: UICollectionView!
-
-        
+    
+    
     //MARK: Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(reloadProfileData), name: .didUpdateProfileImage, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reloadProfileData), name: .didUpdateProfileData, object: nil)
-
+        
         view.backgroundColor = .white
         
         setupViews()
@@ -152,12 +152,12 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         super.viewWillAppear(animated)
         
         guard   let currentUserId = Auth.auth().currentUser?.uid else { return }
-            loadProfileData()
-            loadPosts()
-            updatePostCount(for: currentUserId)
-            updateFollowerCount(for: currentUserId)
-            updateFollowingCount(for: currentUserId)
-            print("Authenticated User ID: \(currentUserId)")
+        loadProfileData()
+        loadPosts()
+        updatePostCount(for: currentUserId)
+        updateFollowerCount(for: currentUserId)
+        updateFollowingCount(for: currentUserId)
+        print("Authenticated User ID: \(currentUserId)")
     }
     
     func updatePostCount(for userID: String) {
@@ -184,7 +184,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             }
         }
     }
-
+    
     func updateFollowerCount(for userID: String) {
         let followersRef = Firestore.firestore().collection("followers").document(userID).collection("userFollowers")
         followersRef.getDocuments { snapshot, error in
@@ -209,16 +209,16 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 self.followingLabel.text = "\(count)\nFollowing"
             } else {
                 print("No following data found for \(userID)")
-                }
             }
         }
+    }
     
     private func updateUI() {
         let hasPosts = !posts.isEmpty
         collectionView.isHidden = !hasPosts
         placeholderStackView.isHidden = hasPosts
     }
-
+    
     
     func loadProfileData() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
@@ -233,7 +233,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 self.usernameLabel.text = data?["username"] as? String ?? "No username"
                 self.bioLabel.text = data?["bio"] as? String ?? "Add your bio"
                 
-                    if let profileImageUrl = data?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
+                if let profileImageUrl = data?["profileImageUrl"] as? String, let url = URL(string: profileImageUrl) {
                     print("Profile Image URL: \(profileImageUrl)") // Debug log
                     self.profileImageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "person.circle"))
                 } else {
@@ -290,8 +290,8 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
             make.top.equalTo(statsStackView.snp.bottom).offset(40)
             make.left.equalToSuperview().offset(20)
             make.right.equalToSuperview().offset(-20)
-            }
         }
+    }
     
     private func setupStackView() {
         view.addSubview(statsStackView)
@@ -333,14 +333,14 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         let db = Firestore.firestore()
         
         db.collection("posts").document(userID).collection("userPosts").order(by: "timestamp", descending: true).getDocuments { snapshot, error in
-               if let error = error {
-                   print("Error fetching posts: \(error.localizedDescription)")
-                   return
-               }
-                    self.posts = snapshot?.documents.compactMap { doc -> Post in
-                        let data = doc.data()
-                        return Post(id: doc.documentID, imageUrl: data["imageUrl"] as? String ?? "", caption: data["caption"] as? String ?? "", likes: data["likes"] as? Int ?? 0)
-                    } ?? []
+            if let error = error {
+                print("Error fetching posts: \(error.localizedDescription)")
+                return
+            }
+            self.posts = snapshot?.documents.compactMap { doc -> Post in
+                let data = doc.data()
+                return Post(id: doc.documentID, imageUrl: data["imageUrl"] as? String ?? "", caption: data["caption"] as? String ?? "", likes: data["likes"] as? Int ?? 0, userID: data["userID"] as? String ?? "")
+            } ?? []
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }

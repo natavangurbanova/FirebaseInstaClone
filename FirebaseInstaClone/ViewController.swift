@@ -13,7 +13,7 @@ import Firebase
 class ViewController: UIViewController {
     
     let titleLabel: UILabel = {
-      let label = UILabel()
+        let label = UILabel()
         label.text = "Instagram Clone"
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 24)
@@ -73,8 +73,8 @@ class ViewController: UIViewController {
         signInButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(signUpTapped), for: .touchUpInside)
     }
-        func setUpConstraints() {
-
+    func setUpConstraints() {
+        
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(80)
             make.centerX.equalToSuperview()
@@ -100,7 +100,7 @@ class ViewController: UIViewController {
             make.right.equalToSuperview().offset(-50)
             make.height.equalTo(50)
         }
-            
+        
         signUpButton.snp.makeConstraints { make in
             make.top.equalTo(signInButton.snp.bottom).offset(20)
             make.left.equalToSuperview().offset(50)
@@ -124,7 +124,7 @@ class ViewController: UIViewController {
             } else {
                 print("Sign in successful!")
                 
-            let tabBarController = TabBarViewController()
+                let tabBarController = TabBarViewController()
                 strongSelf.transitionToTabBarController(tabBarController)
             }
             
@@ -133,15 +133,15 @@ class ViewController: UIViewController {
     }
     
     @objc func signUpTapped() {
-      let signUpViewController = SignUpViewController()
+        let signUpViewController = SignUpViewController()
         navigationController?.pushViewController(signUpViewController, animated: true)
     }
     
     func transitionToTabBarController(_ tabBarController: UITabBarController) {
-            if let sceneDelegate = view.window?.windowScene?.delegate as? SceneDelegate {
-                sceneDelegate.window?.rootViewController = tabBarController
-            }
+        if let sceneDelegate = view.window?.windowScene?.delegate as? SceneDelegate {
+            sceneDelegate.window?.rootViewController = tabBarController
         }
     }
-    
+}
+
 

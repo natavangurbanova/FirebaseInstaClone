@@ -13,7 +13,7 @@ import FirebaseAuth
 class SignUpViewController: UIViewController {
     
     let titleLabel: UILabel = {
-       let label = UILabel()
+        let label = UILabel()
         label.text = "Sign Up Screen"
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 24)
@@ -92,7 +92,7 @@ class SignUpViewController: UIViewController {
             
             self.createUserDocument(withEmail: email)
             print("User successfully signed up!")
-                
+            
             self.transitionToSignInVC()
             
         }

@@ -87,7 +87,7 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
             print("Search query is empty.")
             return
         }
-     searchUsers(with: queryText)
+        searchUsers(with: queryText)
     }
     
     private func searchUsers(with query: String) {
@@ -109,7 +109,7 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
             
             let users = snapshot.documents.compactMap { document -> User? in
-            let data = document.data()
+                let data = document.data()
                 guard let username = data["username"] as? String else { return nil }
                 let userId = document.documentID
                 let profileImageUrl = data["profileImageUrl"] as? String
