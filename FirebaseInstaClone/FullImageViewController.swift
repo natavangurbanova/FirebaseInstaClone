@@ -81,24 +81,43 @@ class FullImageViewController: UIViewController {
     
     private func configureUI() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
+        
         if let url = URL(string: post.imageUrl) {
             imageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "photo"))
         }
-        likesLabel.text = "\(post.likes) Likes"
-        likeButton.isSelected = post.likedBy.contains(userID)
+        let db = Firestore.firestore()
+        let postRef = db.collection("posts").document(post.userID).collection("userPosts").document(post.id)
+        
+        postRef.getDocument { snapshot, error in
+            if let error = error {
+                print("Error fetching latest post data: \(error.localizedDescription)")
+                return
+            }
+            if let data = snapshot?.data() {
+                self.post.likes = data["likes"] as? Int ?? 0
+                self.post.likedBy = data["likedBy"] as? [String] ?? []
+               
+                DispatchQueue.main.async {
+                    self.likesLabel.text = "\(self.post.likes) Likes"
+                    self.likeButton.isSelected = self.post.likedBy.contains(userID)
+                }
+            }
+        }
     }
     
     @objc func likeButtonTapped() {
         guard let userID = Auth.auth().currentUser?.uid else { return }
-        if post.likedBy.contains(userID) {
-            print("User has already liked this post")
-            return
-        }
-        post.likes += 1
-        post.likedBy.append(userID)
-        likesLabel.text = "\(post.likes) Likes"
-        likeButton.isSelected = true
         
+        if post.likedBy.contains(userID) {
+            post.likes -= 1
+            post.likedBy.removeAll { $0 == userID }
+            likeButton.isSelected = false
+        } else {
+            post.likes += 1
+            post.likedBy.append(userID)
+            likeButton.isSelected = true
+        }
+        likesLabel.text = "\(post.likes) Likes"
         updateLikeCountInFirestore()
         delegate?.didUpdatePost(post)
     }
@@ -128,10 +147,10 @@ class FullImageViewController: UIViewController {
     }
     
     private func updateLikeCountInFirestore() {
-        guard let userID = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
         
-        let postRef =  db.collection("posts").document(userID).collection("userPosts").document(post.id)
+        let postRef =  db.collection("posts").document(post.userID).collection("userPosts").document(post.id)
+        
         postRef.updateData([
             "likes" : post.likes,
             "likedBy": post.likedBy
