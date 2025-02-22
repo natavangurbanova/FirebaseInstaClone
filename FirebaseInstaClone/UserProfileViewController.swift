@@ -99,6 +99,10 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if Auth.auth().currentUser == nil {
+            print("User is not authenticated.")
+            return
+        }
         checkIfUserIsFollowed()
         loadProfileData()
     }
@@ -258,7 +262,6 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
         
         let db = Firestore.firestore()
         
-        // Fetch user profile data
         db.collection("users").document(userID).getDocument { snapshot, error in
             if let error = error {
                 print("Error fetching user profile: \(error.localizedDescription)")
@@ -270,6 +273,7 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
                 self.bioLabel.text = data["bio"] as? String ?? "No bio"
                 
                 if let profileImageUrl = data["profileImageUrl"] as? String {
+                    print("Loading profile image from: \(profileImageUrl)")
                     self.profileImageView.sd_setImage(with: URL(string: profileImageUrl), placeholderImage: UIImage(systemName: "person.circle"))
                 } else {
                     self.profileImageView.image = UIImage(systemName: "person.circle")
@@ -279,7 +283,6 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
             }
         }
         
-        // Fetch user posts
         db.collection("posts").document(userID).collection("userPosts").order(by: "timestamp", descending: true).getDocuments { snapshot, error in
             if let error = error {
                 print("Error fetching user posts: \(error.localizedDescription)")
@@ -291,60 +294,99 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
                 return
             }
             
+            print("Found \(documents.count) posts")                      //Debugging line
+            
             self.posts = documents.compactMap { doc -> Post? in
                 let data = doc.data()
+                print("Post data: \(data)")                                //Debug line
+                
                 guard let imageUrl = data["imageUrl"] as? String,
-                      let timestamp = data["timestamp"] as? Timestamp else {
+                      let caption = data["caption"] as? String,
+                      let likes = data["likes"] as? Int else {
+                    print("Skipping post due to missing fields: \(data)")  //Debug line
                     return nil
                 }
-                return Post(imageUrl: imageUrl, timestamp: timestamp.dateValue())
+                
+                let id = doc.documentID
+                let likedBy = data["likedBy"] as? [String] ?? []
+                
+                return Post(id: id, imageUrl: imageUrl, caption: caption, likes: likes, likedBy: likedBy, userID: userID)
             }
             
             DispatchQueue.main.async {
+                print("Posts array updated. Count: \(self.posts.count)")    //Debug line
                 self.postsLabel.text = "\(self.posts.count)\nPosts"
-                self.placeholderStackView.isHidden = !self.posts.isEmpty
+                self.updateUI()
                 self.collectionView.reloadData()
             }
         }
-    }
-
-        
-        func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return posts.count
-        }
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserPostCell.identifier, for: indexPath) as? UserPostCell else {
-                return UICollectionViewCell()
+        db.collection("followers").document(userID).collection("userFollowers").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching followers: \(error.localizedDescription)")
+                return
             }
-            let post = posts[indexPath.row]
-            cell.configure(with: post.imageUrl)
-            return cell
+            
+            guard let documents = snapshot?.documents else {
+                print("No followers found for user.")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.followersLabel.text = "\(documents.count)\nFollowers"
+            }
         }
-        
-        func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-            let post = posts[indexPath.row]
-            let fullUsersImageVC = FullUsersImageViewController()
-            fullUsersImageVC.postImageURL = post.imageUrl
-            navigationController?.pushViewController(fullUsersImageVC, animated: true)
-        }
-        
-        static func createStatLabel(text: String) -> UILabel {
-            let label = UILabel()
-            label.textAlignment = .center
-            label.font = .boldSystemFont(ofSize: 14)
-            label.text = text
-            label.numberOfLines = 2
-            return label
-        }
-        private func updateUI() {
-            let hasPosts = !posts.isEmpty
-            placeholderStackView.isHidden = hasPosts
-            collectionView.isHidden = !hasPosts
-        }
-    }
-    extension UIImageView {
-        func loadImage(from urlString: String) {
-            guard let url = URL(string: urlString) else { return }
-            self.sd_setImage(with: url, completed: nil)
+        db.collection("following").document(userID).collection("userFollowing").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching following: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                print("No following found for user.")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.followingLabel.text = "\(documents.count)\nFollowing"
+            }
         }
     }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return posts.count
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserPostCell.identifier, for: indexPath) as? UserPostCell else {
+            return UICollectionViewCell()
+        }
+        let post = posts[indexPath.row]
+        cell.configure(with: post.imageUrl)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let post = posts[indexPath.row]
+        let fullUsersImageVC = FullUsersImageViewController()
+        fullUsersImageVC.post = post
+        navigationController?.pushViewController(fullUsersImageVC, animated: true)
+    }
+    
+    static func createStatLabel(text: String) -> UILabel {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = .boldSystemFont(ofSize: 14)
+        label.text = text
+        label.numberOfLines = 2
+        return label
+    }
+    private func updateUI() {
+        let hasPosts = !posts.isEmpty
+        placeholderStackView.isHidden = hasPosts
+        collectionView.isHidden = !hasPosts
+    }
+}
+extension UIImageView {
+    func loadImage(from urlString: String, placeholder: UIImage? = UIImage(systemName: "photo")) {
+        guard let url = URL(string: urlString) else { return }
+        self.sd_setImage(with: url, placeholderImage: placeholder)
+    }
+}
