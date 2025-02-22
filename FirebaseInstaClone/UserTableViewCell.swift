@@ -63,19 +63,19 @@ class UserTableViewCell: UITableViewCell {
         }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
-               if let error = error {
-                   print("Failed to load image: \(error.localizedDescription)")
-               }
-               
-               if let data = data, let image = UIImage(data: data) {
-                   DispatchQueue.main.async {
-                       self.profileImageView.image = image
-                   }
-               } else {
-                   DispatchQueue.main.async {
-                       self.profileImageView.image = UIImage(systemName: "person.circle")
-                   }
-               }
-           }.resume()
-       }
+            if let error = error {
+                print("Failed to load image: \(error.localizedDescription)")
+            }
+            
+            if let data = data, let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.profileImageView.image = image
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.profileImageView.image = UIImage(systemName: "person.circle")
+                }
+            }
+        }.resume()
+    }
 }

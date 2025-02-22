@@ -151,7 +151,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        guard   let currentUserId = Auth.auth().currentUser?.uid else { return }
+        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
         loadProfileData()
         loadPosts()
         updatePostCount(for: currentUserId)
