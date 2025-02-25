@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  SignInViewController.swift
 //  FirebaseInstaClone
 //
 //  Created by Natavan Gurbanova on 15.09.24.
@@ -10,7 +10,7 @@ import FirebaseAuth
 import SnapKit
 import Firebase
 
-class ViewController: UIViewController {
+class SignInViewController: UIViewController {
     
     let titleLabel: UILabel = {
         let label = UILabel()

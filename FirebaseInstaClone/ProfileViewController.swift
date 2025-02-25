@@ -359,7 +359,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let post = posts[indexPath.row]
-        let fullImageVC = FullImageViewController()
+        let fullImageVC = PostViewController()
         fullImageVC.post = post
         fullImageVC.delegate =  self
         navigationController?.pushViewController(fullImageVC, animated: true)
@@ -373,7 +373,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
     @objc func logOut() {
         do {
             try Auth.auth().signOut()
-            let loginViewController = ViewController()
+            let loginViewController = SignInViewController()
             let navController = UINavigationController(rootViewController: loginViewController)
             navController.modalPresentationStyle = .fullScreen
             present(navController, animated: true, completion: nil)
@@ -387,7 +387,7 @@ extension Notification.Name {
     static let didUpdateProfileImage = Notification.Name("didUpdateProfileImage")
     static let didUpdateProfileData = Notification.Name("didUpdateProfileData")
 }
-extension ProfileViewController: FullImageViewControllerDelegate {
+extension ProfileViewController: PostViewControllerDelegate {
     func didUpdatePost(_ post: Post) {
         if let index = posts.firstIndex(where: { $0.id == post.id }) {
             posts[index] = post

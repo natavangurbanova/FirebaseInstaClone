@@ -1,5 +1,5 @@
 //
-//  FullImageViewController.swift
+//  PostViewController.swift
 //  FirebaseInstaClone
 //
 //  Created by Natavan Gurbanova on 17.01.25.
@@ -11,10 +11,10 @@ import SDWebImage
 import FirebaseAuth
 import FirebaseFirestore
 
-class FullImageViewController: UIViewController {
+class PostViewController: UIViewController {
     
     var post: Post!
-    weak var delegate: FullImageViewControllerDelegate?
+    weak var delegate: PostViewControllerDelegate?
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -96,7 +96,7 @@ class FullImageViewController: UIViewController {
             if let data = snapshot?.data() {
                 self.post.likes = data["likes"] as? Int ?? 0
                 self.post.likedBy = data["likedBy"] as? [String] ?? []
-               
+                
                 DispatchQueue.main.async {
                     self.likesLabel.text = "\(self.post.likes) Likes"
                     self.likeButton.isSelected = self.post.likedBy.contains(userID)
@@ -163,7 +163,7 @@ class FullImageViewController: UIViewController {
         }
     }
 }
-protocol FullImageViewControllerDelegate: AnyObject {
+protocol PostViewControllerDelegate: AnyObject {
     func didUpdatePost(_ post: Post)
     func didDeletePost(_ post: Post?)
 }

@@ -365,7 +365,7 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let post = posts[indexPath.row]
-        let fullUsersImageVC = FullUsersImageViewController()
+        let fullUsersImageVC = UserPostViewController()
         fullUsersImageVC.post = post
         navigationController?.pushViewController(fullUsersImageVC, animated: true)
     }

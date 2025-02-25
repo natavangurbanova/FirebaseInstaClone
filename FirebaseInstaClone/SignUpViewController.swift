@@ -119,7 +119,7 @@ class SignUpViewController: UIViewController {
     }
     
     func transitionToSignInVC() {
-        let SignInVC = ViewController()
+        let SignInVC = SignInViewController()
         navigationController?.pushViewController(SignInVC, animated: true)
     }
     

@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if Auth.auth().currentUser != nil {
             window?.rootViewController = TabBarViewController()
         } else {
-            let signInVC = ViewController()
+            let signInVC = SignInViewController()
             let navController = UINavigationController(rootViewController: signInVC)
             window?.rootViewController = navController
         }
