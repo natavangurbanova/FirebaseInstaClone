@@ -71,6 +71,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.text = "0\nFollowers"
         label.numberOfLines = 2
+        label.isUserInteractionEnabled = true
         return label
     }()
     
@@ -80,6 +81,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.text = "0\nFollowing"
         label.numberOfLines = 2
+        label.isUserInteractionEnabled = true
         return label
     }()
     
@@ -138,6 +140,7 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
         
         loadPosts()
         updateUI()
+        addGestureRecognizers()
     }
     
     deinit {
@@ -211,6 +214,23 @@ class ProfileViewController: UIViewController, UICollectionViewDataSource, UICol
                 print("No following data found for \(userID)")
             }
         }
+    }
+    
+    private func addGestureRecognizers() {
+        let followersTapGesture = UITapGestureRecognizer(target: self, action: #selector(showFollowers))
+        followersLabel.addGestureRecognizer(followersTapGesture)
+        
+        let followingTapGesture = UITapGestureRecognizer(target: self, action: #selector(showFollowing))
+        followingLabel.addGestureRecognizer(followingTapGesture)
+    }
+    
+    @objc func showFollowers() {
+        let followersVC = FollowerListViewController()
+        navigationController?.pushViewController(followersVC, animated: true)
+    }
+    @objc func showFollowing() {
+        let followingVC = FollowingListViewController()
+        navigationController?.pushViewController(followingVC, animated: true)
     }
     
     private func updateUI() {
