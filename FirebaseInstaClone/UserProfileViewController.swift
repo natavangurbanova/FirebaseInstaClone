@@ -16,6 +16,7 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
     var userID: String?
     private var isFollowing = false
     private var posts: [Post] = []
+    var user: User?
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
