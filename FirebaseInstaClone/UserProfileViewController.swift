@@ -52,10 +52,34 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
         return button
     }()
     
-    private let postsLabel = UserProfileViewController.createStatLabel(text: "0\nPosts")
-    private let followersLabel = UserProfileViewController.createStatLabel(text: "0\nFollowers")
-    private let followingLabel = UserProfileViewController.createStatLabel(text: "0\nFollowing")
+    private let postsLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.text = "0\nPosts"
+        label.numberOfLines = 2
+        return label
+    }()
     
+    private let followersLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.text = "0\nFollowers"
+        label.numberOfLines = 2
+        label.isUserInteractionEnabled = true
+        return label
+    }()
+    
+    private let followingLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.text = "0\nFollowing"
+        label.numberOfLines = 2
+        label.isUserInteractionEnabled = true
+        return label
+    }()
     
     private lazy var statsStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
@@ -96,6 +120,7 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
         setupPlaceholderView()
         setupCollectionView()
         loadProfileData()
+        addGestureRecognizer()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -242,7 +267,6 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
                 print("Error checking follow status: \(error.localizedDescription)")
                 return
             }
-            
             DispatchQueue.main.async {
                 if snapshot?.exists == true {
                     self.followButton.setTitle("Following", for: .normal)
@@ -253,6 +277,24 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
                 }
             }
         }
+    }
+    
+    private func addGestureRecognizer() {
+        let followersTapGesture = UITapGestureRecognizer(target: self, action: #selector(showFollowers))
+        followersLabel.addGestureRecognizer(followersTapGesture)
+        
+        let followingTapgesture = UITapGestureRecognizer(target: self, action: #selector(showFollowings))
+        followingLabel.addGestureRecognizer(followingTapgesture)
+    }
+    @objc func showFollowers() {
+        let userFollowersListVC = UserFollowerListController()
+        userFollowersListVC.userID = self.userID
+        navigationController?.pushViewController(userFollowersListVC, animated: true)
+    }
+    @objc func showFollowings() {
+        let userFollowingListVC = UserFollowingListController()
+        userFollowingListVC.userID = self.userID
+        navigationController?.pushViewController(userFollowingListVC, animated: true)
     }
     
     private func loadProfileData() {
@@ -371,14 +413,6 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
         navigationController?.pushViewController(fullUsersImageVC, animated: true)
     }
     
-    static func createStatLabel(text: String) -> UILabel {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.font = .boldSystemFont(ofSize: 14)
-        label.text = text
-        label.numberOfLines = 2
-        return label
-    }
     private func updateUI() {
         let hasPosts = !posts.isEmpty
         placeholderStackView.isHidden = hasPosts

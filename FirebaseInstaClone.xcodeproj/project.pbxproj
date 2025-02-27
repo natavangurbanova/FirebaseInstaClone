@@ -28,6 +28,8 @@
 		CE791F472D63457F0079F2CA /* UserPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F462D63457E0079F2CA /* UserPostCell.swift */; };
 		CE791F492D6DC2860079F2CA /* FollowerListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F482D6DC2860079F2CA /* FollowerListViewController.swift */; };
 		CE791F4B2D6DC2980079F2CA /* FollowingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F4A2D6DC2980079F2CA /* FollowingListViewController.swift */; };
+		CE791F4D2D6F78CA0079F2CA /* UserFollowerListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F4C2D6F78CA0079F2CA /* UserFollowerListController.swift */; };
+		CE791F4F2D6F78DF0079F2CA /* UserFollowingListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE791F4E2D6F78DF0079F2CA /* UserFollowingListController.swift */; };
 		CEA6E6D12CC0305D006464A2 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA6E6D02CC0305D006464A2 /* SignUpViewController.swift */; };
 		CEA6E6D32CCFDBF8006464A2 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA6E6D22CCFDBF8006464A2 /* EditProfileViewController.swift */; };
 		CEFF24FF2D1470AB009E95E8 /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */; };
@@ -59,6 +61,8 @@
 		CE791F462D63457E0079F2CA /* UserPostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPostCell.swift; sourceTree = "<group>"; };
 		CE791F482D6DC2860079F2CA /* FollowerListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerListViewController.swift; sourceTree = "<group>"; };
 		CE791F4A2D6DC2980079F2CA /* FollowingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingListViewController.swift; sourceTree = "<group>"; };
+		CE791F4C2D6F78CA0079F2CA /* UserFollowerListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFollowerListController.swift; sourceTree = "<group>"; };
+		CE791F4E2D6F78DF0079F2CA /* UserFollowingListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFollowingListController.swift; sourceTree = "<group>"; };
 		CEA6E6D02CC0305D006464A2 /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		CEA6E6D22CCFDBF8006464A2 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
@@ -131,6 +135,8 @@
 				CE791F3E2D5B61010079F2CA /* SearchViewController.swift */,
 				CE791F3C2D5A12190079F2CA /* UserTableViewCell.swift */,
 				CE791F422D5BD6830079F2CA /* UserProfileViewController.swift */,
+				CE791F4C2D6F78CA0079F2CA /* UserFollowerListController.swift */,
+				CE791F4E2D6F78DF0079F2CA /* UserFollowingListController.swift */,
 				CE791F462D63457E0079F2CA /* UserPostCell.swift */,
 				CE791F442D5CC7170079F2CA /* UserPostViewController.swift */,
 				CEFF24FE2D1470AB009E95E8 /* UploadViewController.swift */,
@@ -261,7 +267,9 @@
 			files = (
 				CE791F472D63457F0079F2CA /* UserPostCell.swift in Sources */,
 				CE791F3F2D5B61010079F2CA /* SearchViewController.swift in Sources */,
+				CE791F4D2D6F78CA0079F2CA /* UserFollowerListController.swift in Sources */,
 				CEA6E6D32CCFDBF8006464A2 /* EditProfileViewController.swift in Sources */,
+				CE791F4F2D6F78DF0079F2CA /* UserFollowingListController.swift in Sources */,
 				CE3CA6D52D399A9700C1F107 /* Post.swift in Sources */,
 				CE40AEE32C96DCD50092F1FA /* SignInViewController.swift in Sources */,
 				CE40AEDF2C96DCD50092F1FA /* AppDelegate.swift in Sources */,

@@ -1,28 +1,35 @@
 //
-//  FollowerListViewController.swift
+//  UserFollowingListController.swift
 //  FirebaseInstaClone
 //
-//  Created by Natavan Gurbanova on 25.02.25.
+//  Created by Natavan Gurbanova on 26.02.25.
 //
 
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
+import SnapKit
 
-class FollowerListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class UserFollowingListController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     private let tableView: UITableView = {
         let table = UITableView()
-        table.register(FollowerCell.self, forCellReuseIdentifier: FollowerCell.identifier)
+        table.register(UserFollowingCell.self, forCellReuseIdentifier: UserFollowingCell.identifier)
         return table
     }()
-    private var followers: [User] = []
+    
+    var userID: String?
+    private var following: [User] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "Followers"
-        
+        title = "Followings"
+        setupTableView()
+        fetchFollowing()
+    }
+    
+    private func setupTableView() {
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
@@ -30,23 +37,26 @@ class FollowerListViewController: UIViewController, UITableViewDelegate, UITable
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        
-        fetchFollowers()
     }
     
-    private func fetchFollowers() {
-        guard let currentUserId = Auth.auth().currentUser?.uid else { return }
+    private func fetchFollowing() {
+        guard let viewedUserID = userID else {
+            return
+        }
         
         let db = Firestore.firestore()
-        let followersRef = db.collection("followers").document(currentUserId).collection("userFollowers")
+        let userFollowingRef = db.collection("following").document(viewedUserID).collection("userFollowing")
         
-        followersRef.getDocuments { snapshot, error in
+        userFollowingRef.getDocuments { snapshot, error in
             if let error = error {
-                print("Error fetching followers: \(error.localizedDescription)")
+                print("Error fetching user followings: \(error.localizedDescription)")
                 return
             }
             
-            guard let documents = snapshot?.documents else { return }
+            guard let documents = snapshot?.documents, !documents.isEmpty else {
+                print("No followings found")
+                return
+            }
             
             let group = DispatchGroup()
             var users: [User] = []
@@ -54,52 +64,55 @@ class FollowerListViewController: UIViewController, UITableViewDelegate, UITable
             for document in documents {
                 let userId = document.documentID
                 group.enter()
+                
                 db.collection("users").document(userId).getDocument { userSnapshot, error in
                     defer { group.leave() }
+                    
                     if let error = error {
-                        print("Error fetching user data: \(error.localizedDescription)")
+                        print("Error fetching user data for \(userId): \(error.localizedDescription)")
                         return
                     }
                     
                     if let data = userSnapshot?.data(), let username = data["username"] as? String {
                         let profileImageUrl = data["profileImageUrl"] as? String
                         let user = User(id: userId, username: username, profileImageUrl: profileImageUrl)
-                        users.append(user)
+                        
+                        DispatchQueue.main.async {
+                            users.append(user)
+                        }
                     }
                 }
             }
             
             group.notify(queue: .main) {
-                self.followers = users
+                self.following = users
                 self.tableView.reloadData()
             }
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return followers.count
+        return following.count
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: FollowerCell.identifier, for: indexPath) as? FollowerCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: UserFollowingCell.identifier, for: indexPath) as? UserFollowingCell else {
             return UITableViewCell()
         }
-        let user = followers[indexPath.row]
+        let user = following[indexPath.row]
         cell.configure(with: user)
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            tableView.deselectRow(at: indexPath, animated: true)
-            let selectedUser = followers[indexPath.row]
-            let userProfileVC = UserProfileViewController()
-            userProfileVC.userID = selectedUser.id
-            
-            navigationController?.pushViewController(userProfileVC, animated: true)
-        }
+        tableView.deselectRow(at: indexPath, animated: true)
+        let selectedUser = following[indexPath.row]
+        let userProfileVC = UserProfileViewController()
+        userProfileVC.userID = selectedUser.id
+        navigationController?.pushViewController(userProfileVC, animated: true)
+    }
 }
 
-class FollowerCell: UITableViewCell {
-    static let identifier = "FollowerCell"
+class UserFollowingCell: UITableViewCell {
+    static let identifier = "UserFollowingCell"
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
