@@ -302,7 +302,7 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
             print("Error: User ID is nil.")
             return
         }
-        
+            
         let db = Firestore.firestore()
         
         db.collection("users").document(userID).getDocument { snapshot, error in
@@ -346,13 +346,13 @@ class UserProfileViewController: UIViewController, UICollectionViewDelegate, UIC
                 guard let imageUrl = data["imageUrl"] as? String,
                       let caption = data["caption"] as? String,
                       let likes = data["likes"] as? Int else {
+                    
                     print("Skipping post due to missing fields: \(data)")  //Debug line
                     return nil
                 }
                 
                 let id = doc.documentID
                 let likedBy = data["likedBy"] as? [String] ?? []
-                
                 return Post(id: id, imageUrl: imageUrl, caption: caption, likes: likes, likedBy: likedBy, userID: userID)
             }
             

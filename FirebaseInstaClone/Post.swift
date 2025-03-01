@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SnapKit
+import FirebaseFirestore
 
 struct Post {
     let id: String
